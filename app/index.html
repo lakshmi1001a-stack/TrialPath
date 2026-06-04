@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<!--
+  TrialPath — AI-Powered Clinical Trial Explorer
+  Copyright (c) 2026 TrialPath. All rights reserved.
+  Built with ClinicalTrials.gov (NIH) + Anthropic Claude AI
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="TrialPath">
+<meta name="description" content="Find the right clinical trial in any language. AI eligibility scoring, plain-language summaries, caregiver share.">
+<title>TrialPath — Find the Right Clinical Trial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--bg:#F4F1EB;--sf:#FDFCF9;--sf2:#EDE9DF;--bd:#DDD8CE;--bd2:#C2BDB0;--tx:#18160F;--tx2:#6B6455;--tx3:#9E9588;--g:#1E4D0F;--gl:#E8F2E0;--gm:#3A7A1A;--bl:#0C3D6B;--bll:#E4EEF8;--blm:#1A5FA0;--am:#7A4A08;--aml:#FDF0DC;--amm:#C07010;--rd:#6B1A1A;--rdl:#FAECEC;--rdm:#B03030;--tl:#0A3D30;--tll:#E0F2EC;--tlm:#12614A;--pu:#2D1A6B;--pul:#EDEAFC;--pum:#5040C0;--r:12px;--rs:8px;--rx:6px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:15px;height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}::-webkit-scrollbar-track{background:transparent}
+a{color:var(--blm);text-decoration:none}a:hover{text-decoration:underline}
+.app{display:grid;grid-template-rows:60px 1fr;height:100vh;overflow:hidden}
+header{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-size:20px;color:var(--tx);white-space:nowrap}
+.logo-dot{width:26px;height:26px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-dot i{font-size:11px;color:#fff}
+.hdr-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.main{display:grid;grid-template-columns:310px 1fr;overflow:hidden;height:100%}
+.sidebar{background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sb-tabs{display:flex;background:var(--sf2);border-bottom:1px solid var(--bd);flex-shrink:0}
+.sb-tab{flex:1;padding:9px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--tx3);transition:all .15s;border-bottom:2px solid transparent}
+.sb-tab.on{background:var(--sf);color:var(--tx);border-bottom-color:var(--gm)}
+.sb-c{overflow-y:auto;flex:1;padding:15px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:var(--rx);background:var(--bg);font-family:inherit;font-size:13px;color:var(--tx);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--gm);box-shadow:0 0 0 2px rgba(58,122,26,.1)}
+input[type=checkbox]{width:14px;height:14px;accent-color:var(--gm);flex-shrink:0;cursor:pointer}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E9588' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px}
+textarea{resize:vertical;min-height:68px;line-height:1.5}
+.fg{margin-bottom:10px}.fl{font-size:11px;color:var(--tx2);margin-bottom:4px;font-weight:500;display:block}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-p{width:100%;padding:9px 14px;background:var(--g);color:#fff;border:none;border-radius:var(--rx);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s}
+.btn-p:hover{background:var(--gm)}.btn-p:disabled{opacity:.55;cursor:not-allowed}
+.btn-s{width:100%;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rx);font-family:inherit;font-size:12px;font-weight:500;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
+.btn-s:hover{background:var(--bd)}
+.bsm{padding:6px 11px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rx);font-family:inherit;font-size:11px;font-weight:500;color:var(--tx2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .12s}
+.bsm:hover{background:var(--sf2);border-color:var(--bd2);color:var(--tx)}
+.bsm.pr{background:var(--g);color:#fff;border-color:var(--g)}.bsm.pr:hover{background:var(--gm)}
+.lang-s{padding:5px 26px 5px 10px;border:1px solid var(--bd);border-radius:var(--rx);background:var(--sf);font-family:inherit;font-size:12px;color:var(--tx);cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E9588' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.cmp-btn{display:none;align-items:center;gap:6px;padding:6px 12px;background:var(--bl);color:#fff;border:none;border-radius:99px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.shr-btn{padding:6px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rx);font-family:inherit;font-size:12px;font-weight:500;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:5px}
+.shr-btn:hover{background:var(--bd)}
+.sec-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);margin-bottom:10px}
+.fbadge{display:none;margin-top:8px;padding:8px 10px;background:var(--aml);border-radius:var(--rx);font-size:11px;color:var(--am);border:1px solid #F5D88A}
+.fbadge strong{display:block;margin-bottom:3px;font-size:12px}
+.fchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.clf{background:none;border:none;color:var(--am);cursor:pointer;font-size:11px;font-weight:600;margin-top:4px;padding:0}
+.spf{display:flex;align-items:flex-start;gap:8px;padding:9px;border-radius:var(--rx);margin-bottom:8px}
+.spf-t{background:var(--tll)}.spf-p{background:var(--pul)}
+.spf-lbl{font-size:12px;font-weight:600;cursor:pointer;display:block;margin-bottom:2px}
+.spf-t .spf-lbl{color:var(--tl)}.spf-p .spf-lbl{color:var(--pu)}
+.spf-sub{font-size:10px}.spf-t .spf-sub{color:var(--tlm)}.spf-p .spf-sub{color:var(--pum)}
+.li{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;padding:7px 9px;background:var(--sf2);border-radius:var(--rx);margin-bottom:5px;cursor:pointer;transition:background .12s}
+.li:hover{background:var(--bd)}
+.li-tx{font-size:12px;color:var(--tx);line-height:1.4;flex:1}.li-sub{font-size:10px;color:var(--tx3);margin-top:1px}
+.li-del{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:12px;padding:2px;flex-shrink:0}
+.li-del:hover{color:var(--rd)}.emsg{font-size:12px;color:var(--tx3);font-style:italic;text-align:center;padding:14px 0}
+.results{display:flex;flex-direction:column;overflow:hidden;height:100%}
+.toolbar{padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--bd);background:var(--sf);flex-shrink:0;flex-wrap:wrap}
+.tab-bar{display:flex;gap:3px;flex-wrap:wrap}
+.tab{padding:5px 11px;border-radius:99px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--tx2);transition:all .15s;white-space:nowrap}
+.tab.on{background:var(--tx);color:#fff}.tab:not(.on):hover{background:var(--sf2)}
+.tbr{display:flex;align-items:center;gap:8px}
+.rcnt{font-size:12px;color:var(--tx2);white-space:nowrap}
+.sortsel{padding:5px 26px 5px 9px;font-size:11px;border-radius:99px;border:1px solid var(--bd);background:var(--sf);font-family:inherit;color:var(--tx);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E9588' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;outline:none}
+.rbody{overflow-y:auto;padding:16px 18px;flex:1}
+.ss{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.sb{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:11px 12px}
+.sbn{font-family:'Fraunces',serif;font-size:24px;color:var(--tx);line-height:1}
+.sbl{font-size:10px;color:var(--tx3);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+.tc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tc:hover{border-color:var(--bd2);box-shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04)}
+.tc.exp{border-color:var(--gm);box-shadow:0 0 0 3px rgba(58,122,26,.1)}
+.ch{display:flex;gap:10px;align-items:flex-start}
+.ct{font-size:13.5px;font-weight:500;line-height:1.45;flex:1;color:var(--tx)}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.brec{background:var(--gl);color:var(--g)}.bny{background:var(--aml);color:var(--am)}.benv{background:var(--bll);color:var(--bl)}.bact{background:var(--tll);color:var(--tl)}.bx{background:var(--sf2);color:var(--tx2)}
+.cm{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.mc{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tx2)}
+.mc i{font-size:10px}
+.ctags{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
+.tv{background:var(--tll);color:var(--tl)}.td{background:var(--pul);color:var(--pu)}.ttr{background:var(--bll);color:var(--bl)}
+.cas{display:flex;align-items:center;gap:6px;margin-top:10px}
+.ib{width:28px;height:28px;border-radius:7px;border:1px solid var(--bd);background:var(--sf);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);font-size:12px;transition:all .12s;flex-shrink:0}
+.ib:hover{background:var(--sf2);border-color:var(--bd2);color:var(--tx)}
+.ib.bon{background:var(--aml);border-color:var(--am);color:var(--am)}
+.ib.con{background:var(--bll);border-color:var(--bl);color:var(--bl)}
+.ep{display:flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;margin-left:auto}
+.ehi{background:var(--gl);color:var(--g)}.emd{background:var(--aml);color:var(--am)}.elo{background:var(--rdl);color:var(--rd)}
+.det{margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);display:none}
+.det.open{display:block}
+.aib{background:linear-gradient(135deg,#EDF5E4,#E8EFF8);border:1px solid var(--bd);border-radius:var(--rx);padding:12px;margin-bottom:12px}
+.ail{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.ait{font-size:12.5px;color:var(--tx);line-height:1.7}
+.rkb{background:var(--rdl);border:1px solid #F0C0C0;border-radius:var(--rx);padding:12px;margin-bottom:10px}
+.rkl{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--rd);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.ckb{background:var(--gl);border:1px solid #B8D8A0;border-radius:var(--rx);padding:12px;margin-bottom:10px}
+.ckl{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--g);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.cks{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px}
+.ckn{width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ckt{font-size:11.5px;color:var(--tx);line-height:1.5}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.df label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);display:block;margin-bottom:3px}
+.df p{font-size:12px;color:var(--tx2);line-height:1.5}
+.pr-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.pill{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--sf2);color:var(--tx2);border:1px solid var(--bd)}
+.cbox{background:var(--sf2);border-radius:var(--rx);padding:10px 12px;margin-bottom:10px}
+.cbox label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);display:block;margin-bottom:5px}
+.cbox p{font-size:11.5px;color:var(--tx2);line-height:1.6;white-space:pre-wrap}
+.pipe{margin-bottom:12px}
+.pipelbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:5px}
+.ptrack{display:flex;align-items:center;overflow-x:auto;padding-bottom:4px}
+.pstep{display:flex;flex-direction:column;align-items:center;min-width:64px}
+.pdot{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--tx3);flex-shrink:0}
+.pdot.dn{background:var(--g);border-color:var(--g);color:#fff}
+.pdot.cu{background:var(--am);border-color:var(--am);color:#fff;box-shadow:0 0 0 4px var(--aml)}
+.pline{flex:1;height:2px;background:var(--bd);min-width:16px}.pline.dn{background:var(--g)}
+.pnm{font-size:9px;color:var(--tx3);margin-top:4px;text-align:center;font-weight:500}.pnm.cu{color:var(--am);font-weight:700}
+.dvw{margin-bottom:12px}
+.dvl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pu);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.dvr{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.dvn{font-size:10px;color:var(--tx2);width:68px;flex-shrink:0}
+.dvt{flex:1;height:6px;background:var(--sf2);border-radius:3px;overflow:hidden}
+.dvf{height:100%;border-radius:3px;background:var(--pum)}
+.dvp{font-size:10px;color:var(--tx3);width:26px;text-align:right;flex-shrink:0}
+.das{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.mbg.open{display:flex}
+.modal{background:var(--sf);border-radius:16px;max-width:920px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column}
+.mh{padding:15px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.mh h2{font-family:'Fraunces',serif;font-size:18px;font-weight:400}
+.mc2{background:none;border:none;font-size:18px;color:var(--tx2);cursor:pointer}
+.mb{overflow-y:auto;padding:16px 20px;flex:1}
+.cpr{border-bottom:1px solid var(--bd);padding-bottom:12px;margin-bottom:12px}
+.cpr:last-child{border-bottom:none}
+.cprl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:6px}
+.cpcc{display:grid;gap:8px}
+.cpcc-i{background:var(--sf2);border-radius:var(--rx);padding:9px 11px;font-size:12px;color:var(--tx2);line-height:1.5}
+.cpcc-i strong{display:block;font-weight:500;color:var(--tx);margin-bottom:2px;font-size:11.5px}
+.sti{padding:9px 0;border-bottom:1px solid var(--bd)}.sti:last-child{border-bottom:none}
+.stt{font-size:12.5px;font-weight:500;color:var(--tx);margin-bottom:3px}
+.stm{font-size:11px;color:var(--tx2)}
+.saib{background:var(--gl);border-radius:var(--rx);padding:13px;margin:12px 0;font-size:13px;color:var(--tx);line-height:1.7}
+.empty{text-align:center;padding:50px 16px;color:var(--tx3)}
+.empty i{font-size:44px;margin-bottom:14px;display:block;opacity:.35}
+.empty h3{font-family:'Fraunces',serif;font-size:20px;color:var(--tx2);font-weight:400;margin-bottom:7px}
+.empty p{font-size:13px;line-height:1.6;max-width:300px;margin:0 auto}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;vertical-align:-2px;margin-right:5px}
+.sdk{border-color:rgba(0,0,0,.1);border-top-color:var(--tx2)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.blink{animation:blink 1.1s infinite}@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--tx);color:#fff;padding:9px 14px;border-radius:var(--rx);font-size:12px;font-weight:500;transform:translateY(60px);opacity:0;transition:all .22s;z-index:400;max-width:280px}
+.toast.show{transform:translateY(0);opacity:1}
+.tov{position:fixed;inset:0;background:rgba(255,255,255,.75);z-index:150;display:none;align-items:center;justify-content:center;font-size:14px;color:var(--tx2);gap:10px}
+.tov.show{display:flex}
+.wm{position:fixed;bottom:6px;right:10px;font-size:10px;color:var(--tx3);opacity:.5;pointer-events:none;z-index:50}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo"><div class="logo-dot"><i class="fa-solid fa-arrow-right"></i></div>TrialPath</div>
+  <div class="hdr-r">
+    <button class="cmp-btn" id="cmpBtn" onclick="openM('cmpM')"><i class="fa-solid fa-code-compare"></i> Compare <span id="cmpCnt">0</span></button>
+    <button class="shr-btn" onclick="openShare()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+  <button class="shr-btn" onclick="openM('settingsM')" title="Settings — change AI key/model" style="gap:5px">
+    <i class="fa-solid fa-gear"></i> Settings
+    <span id="keyIndicator" style="display:inline-flex;align-items:center;margin-left:2px"></span>
+  </button>
+    <select class="lang-s" id="langS" onchange="translateUI(this.value)">
+      <option value="en">🌐 English</option><option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option><option value="ar">🇸🇦 العربية</option>
+      <option value="zh">🇨🇳 中文</option><option value="hi">🇮🇳 हिंदी</option>
+      <option value="pt">🇧🇷 Português</option><option value="de">🇩🇪 Deutsch</option>
+    </select>
+  </div>
+</header>
+<div class="main">
+<aside class="sidebar">
+  <div class="sb-tabs">
+    <button class="sb-tab on" onclick="sTab('s',this)" data-i18n="Search">Search</button>
+    <button class="sb-tab" onclick="sTab('e',this)" data-i18n="Eligibility">Eligibility</button>
+    <button class="sb-tab" onclick="sTab('sv',this)" data-i18n="Saved">Saved</button>
+    <button class="sb-tab" onclick="sTab('al',this)" data-i18n="Alerts">Alerts</button>
+  </div>
+  <div class="sb-c" id="t-s">
+    <div class="fg"><label class="fl" data-i18n="Search condition, drug, or keyword">Search condition, drug, or keyword</label>
+      <input type="text" id="query" placeholder="e.g. lung cancer, Alzheimer's, metformin…"/></div>
+    <button class="btn-p" id="searchBtn" onclick="doSearch()"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="Search Trials">Search Trials</span></button>
+    <div class="fbadge" id="fbadge"><strong>Active filters</strong><div class="fchips" id="fchips"></div><button class="clf" onclick="clearFilters()">✕ Clear all</button></div>
+    <div style="margin-top:14px;margin-bottom:8px" class="sec-t" data-i18n="Filters">Filters</div>
+    <div class="frow fg">
+      <div><label class="fl" data-i18n="Phase">Phase</label>
+        <select id="phase" onchange="apiFilterChanged()"><option value="">All phases</option><option value="PHASE1">Phase 1</option><option value="PHASE2">Phase 2</option><option value="PHASE3">Phase 3</option><option value="PHASE4">Phase 4</option></select></div>
+      <div><label class="fl" data-i18n="Status">Status</label>
+        <select id="status" onchange="apiFilterChanged()"><option value="">All statuses</option><option value="NOT_YET_RECRUITING">Not yet open</option><option value="RECRUITING">Recruiting</option><option value="ENROLLING_BY_INVITATION">By invitation</option><option value="ACTIVE_NOT_RECRUITING">Active</option></select></div>
+    </div>
+    <div class="frow fg">
+      <div><label class="fl" data-i18n="Age group">Age group</label>
+        <select id="ageG" onchange="apiFilterChanged()"><option value="">Any age</option><option value="CHILD">Child (0-17)</option><option value="ADULT">Adult (18-64)</option><option value="OLDER_ADULT">65+</option></select></div>
+      <div><label class="fl" data-i18n="Sex">Sex</label>
+        <select id="sex" onchange="apiFilterChanged()"><option value="">Any</option><option value="FEMALE">Female</option><option value="MALE">Male</option></select></div>
+    </div>
+    <div class="fg"><label class="fl" data-i18n="Continent">Continent</label>
+      <select id="cont" onchange="clientFilterChanged()"><option value="">All continents</option><option value="north_america">🌎 North America</option><option value="south_america">🌎 South America</option><option value="europe">🌍 Europe</option><option value="africa">🌍 Africa</option><option value="asia">🌏 Asia</option><option value="middle_east">🌍 Middle East</option><option value="oceania">🌏 Oceania</option></select></div>
+    <div class="fg"><label class="fl" data-i18n="Country / city">Country / city</label>
+      <input type="text" id="loc" placeholder="e.g. United Kingdom, London, Germany…" oninput="debounceLocation()"/></div>
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+      <input type="checkbox" id="gps" onchange="togGPS(this)">
+      <label for="gps" style="font-size:12px;color:var(--tx2);cursor:pointer" data-i18n="Use my GPS location">Use my GPS location</label>
+      <span id="gpsS" style="font-size:10px;color:var(--tx3)"></span>
+    </div>
+      <div class="spf spf-t"><input type="checkbox" id="virt" onchange="clientFilterChanged()" style="margin-top:2px">
+      <div><label for="virt" class="spf-lbl" data-i18n="Virtual / decentralised trials only">Virtual / decentralised trials only</label><div class="spf-sub">Remote · telehealth · home-based · DCT</div></div></div>
+      <div class="spf spf-p"><input type="checkbox" id="div" onchange="clientFilterChanged()" style="margin-top:2px">
+      <div><label for="div" class="spf-lbl" data-i18n="Diversity-focused trials">Diversity-focused trials</label><div class="spf-sub">Actively seeking underrepresented groups</div></div></div>
+  </div>
+  <div class="sb-c" id="t-e" style="display:none">
+    <div class="sec-t" data-i18n="Your profile">Your profile</div>
+    <p style="font-size:12px;color:var(--tx2);margin-bottom:12px;line-height:1.5">Claude AI scores each trial 0-100% for your potential fit.</p>
+    <div class="frow fg">
+      <div><label class="fl" data-i18n="Age">Age</label><input type="number" id="eAge" placeholder="52" min="0" max="120"></div>
+      <div><label class="fl" data-i18n="Sex">Sex</label><select id="eSex"><option value="">-</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+    </div>
+    <div class="fg"><label class="fl" data-i18n="Conditions / diagnoses">Conditions / diagnoses</label><textarea id="eCond" placeholder="e.g. Type 2 diabetes, hypertension…"></textarea></div>
+    <div class="fg"><label class="fl" data-i18n="Medications (optional)">Medications (optional)</label><textarea id="eMeds" placeholder="e.g. Metformin 500mg…" rows="2"></textarea></div>
+    <div class="fg"><label class="fl" data-i18n="Ethnicity (for diversity matching)">Ethnicity (for diversity matching)</label>
+      <select id="eEth"><option value="">Prefer not to say</option><option value="White">White / Caucasian</option><option value="Black">Black / African American</option><option value="Hispanic">Hispanic / Latino</option><option value="Asian">Asian</option><option value="Native American">Native American / Indigenous</option><option value="Pacific Islander">Pacific Islander</option><option value="Mixed">Mixed / Other</option></select></div>
+    <button class="btn-p" onclick="runEligibility()"><i class="fa-solid fa-stethoscope"></i> <span data-i18n="Check my eligibility">Check my eligibility</span></button>
+    <div id="eligS" style="font-size:11px;color:var(--tx3);margin-top:8px;text-align:center"></div>
+  </div>
+  <div class="sb-c" id="t-sv" style="display:none">
+    <div class="sec-t" data-i18n="Bookmarks">Bookmarks</div><div id="bmList"><div class="emsg">No bookmarks yet</div></div>
+    <div style="margin-top:14px" class="sec-t" data-i18n="Compare list">Compare list</div>
+    <div id="cmpList"><div class="emsg">Add trials to compare</div></div>
+    <button class="btn-s" style="margin-top:8px" onclick="openM('cmpM')"><i class="fa-solid fa-code-compare"></i> <span data-i18n="Open compare view">Open compare view</span></button>
+    <div style="margin-top:14px" class="sec-t" data-i18n="Share with caregiver / doctor">Share with caregiver / doctor</div>
+    <p style="font-size:11.5px;color:var(--tx2);margin-bottom:8px;line-height:1.5">Generate a plain-language report of bookmarked trials for your next appointment.</p>
+    <button class="btn-s" onclick="openShare()"><i class="fa-solid fa-file-medical"></i> <span data-i18n="Generate share report">Generate share report</span></button>
+  </div>
+  <div class="sb-c" id="t-al" style="display:none">
+    <div class="sec-t" data-i18n="Trial alerts">Trial alerts</div>
+    <p style="font-size:12px;color:var(--tx2);margin-bottom:12px;line-height:1.5">Saved in your browser.</p>
+    <div class="fg"><label class="fl" data-i18n="Condition">Condition</label><input type="text" id="alCond" placeholder="e.g. Parkinson's, breast cancer…"></div>
+    <div class="fg"><label class="fl" data-i18n="Your email">Your email</label><input type="email" id="alEmail" placeholder="you@email.com"></div>
+    <button class="btn-p" onclick="mkAlert()"><i class="fa-solid fa-bell"></i> <span data-i18n="Set alert">Set alert</span></button>
+    <div id="alList" style="margin-top:12px"></div>
+  </div>
+</aside>
+<main class="results">
+  <div class="toolbar" id="toolbar" style="display:none">
+    <div class="tab-bar">
+      <button class="tab on" id="tAll" onclick="swTab('all')" data-i18n="All">All</button>
+      <button class="tab" id="tBm" onclick="swTab('bm')" data-i18n="Bookmarked">Bookmarked</button>
+      <button class="tab" id="tVirt" onclick="swTab('virt')" data-i18n="Virtual">Virtual</button>
+      <button class="tab" id="tDiv" onclick="swTab('div')" data-i18n="Diversity">Diversity</button>
+    </div>
+    <div class="tbr">
+      <span class="rcnt" id="rcnt"></span>
+      <select class="sortsel" id="sortBy" onchange="renderAll()">
+        <option value="def">Relevance</option><option value="elig">Eligibility fit</option>
+        <option value="phase">Phase</option><option value="enroll">Enrollment</option>
+        <option value="dist">Distance</option>
+      </select>
+    </div>
+  </div>
+  <div class="rbody" id="rbody">
+    <div class="empty"><i class="fa-regular fa-circle-dot"></i><h3>Discover clinical trials</h3>
+    <p>Search any condition, drug, or keyword. TrialPath searches 450,000+ live trials, scores your eligibility, and explains everything in plain language.</p></div>
+  </div>
+</main>
+</div>
+</div>
+<!-- SETTINGS MODAL -->
+<div class="mbg" id="settingsM">
+  <div class="modal" style="max-width:500px">
+    <div class="mh">
+      <h2><i class="fa-solid fa-gear" style="margin-right:8px;font-size:16px"></i>AI Settings</h2>
+      <button class="mc2" onclick="closeM('settingsM')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="mb" style="padding:20px">
+
+      <!-- Current status -->
+      <div id="settingsStatus" style="background:var(--gl);border:1px solid #B8D8A0;border-radius:var(--rx);padding:10px 13px;margin-bottom:16px;font-size:12.5px;color:var(--g)">
+        <i class="fa-solid fa-circle-check" style="margin-right:6px"></i>
+        <span id="settingsStatusText">AI active — Google Gemini 2.0 Flash</span>
+      </div>
+
+      <!-- Provider -->
+      <div class="fg">
+        <label class="fl" data-i18n="AI provider">AI provider</label>
+        <select id="settProv" onchange="settProvChange(this.value)">
+          <option value="anthropic">Anthropic Claude (default)</option>
+          <option value="google">Google AI Studio (free)</option>
+          <option value="openrouter">OpenRouter (free Gemini / Llama)</option>
+          <option value="custom">Custom (OpenAI-compatible)</option>
+        </select>
+      </div>
+
+      <!-- Model (built-in providers) -->
+      <div class="fg" id="settModelGroup">
+        <label class="fl" data-i18n="Model">Model</label>
+        <select id="settModel">
+          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (fast, default) ★</option>
+          <option value="claude-sonnet-4-5-20251022">Claude Sonnet 4.5 (best quality)</option>
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash (Google, free)</option>
+          <option value="gemini-2.5-flash">Gemini 2.5 Flash (Google, free)</option>
+          <option value="google/gemini-2.0-flash:free">Gemini 2.0 Flash via OpenRouter</option>
+          <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B via OpenRouter</option>
+        </select>
+      </div>
+
+      <!-- Model (custom provider — free text) -->
+      <div class="fg" id="settModelCustomGroup" style="display:none">
+        <label class="fl" data-i18n="Model name">Model name</label>
+        <input type="text" id="settModelCustom" placeholder="e.g. llama3.2, deepseek-chat, gpt-4o-mini"
+          style="font-family:var(--font-mono,monospace);font-size:12px">
+      </div>
+
+      <!-- Base URL (custom provider only) -->
+      <div class="fg" id="settBaseUrlGroup" style="display:none">
+        <label class="fl" data-i18n="Base URL">Base URL</label>
+        <input type="text" id="settBaseUrl" placeholder="http://localhost:11434/v1"
+          style="font-family:var(--font-mono,monospace);font-size:12px">
+        <div style="font-size:11px;color:var(--tx3);margin-top:4px;line-height:1.5">
+          Include the full path, e.g. <code style="background:var(--sf2);padding:1px 4px;border-radius:3px">http://localhost:11434/v1</code>
+          for Ollama, or <code style="background:var(--sf2);padding:1px 4px;border-radius:3px">https://api.groq.com/openai/v1</code>
+          for Groq.
+        </div>
+      </div>
+
+      <!-- API Key -->
+      <div class="fg">
+        <label class="fl" data-i18n="API key">API key</label>
+        <div style="display:flex;gap:6px">
+          <input type="password" id="settKey" placeholder="AIza… or sk-or-v1-…"
+            style="flex:1;font-family:var(--font-mono,monospace);font-size:12px">
+          <button onclick="toggleKeyVis()" class="bsm" id="settKeyToggle" title="Show/hide key"
+            style="flex-shrink:0;width:36px;justify-content:center">
+            <i class="fa-solid fa-eye" id="settEyeIcon"></i>
+          </button>
+        </div>
+        <div id="settKeyHint" style="font-size:11px;color:var(--tx3);margin-top:5px;line-height:1.5">
+          Get a free key at
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blm)">aistudio.google.com</a>
+          (Google) or
+          <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--blm)">openrouter.ai</a>
+          (OpenRouter).
+          Never share your key publicly.
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn-p" onclick="applySettings()" style="flex:1">
+          <i class="fa-solid fa-check"></i> <span data-i18n="Save & activate">Save &amp; activate</span>
+        </button>
+        <button class="btn-s" onclick="testKey()" style="width:auto;padding:9px 14px">
+          <i class="fa-solid fa-flask"></i> <span data-i18n="Test">Test</span>
+        </button>
+      </div>
+      <div id="settTestResult" style="font-size:12px;margin-top:10px;min-height:18px;color:var(--tx2)"></div>
+
+      <!-- Divider -->
+      <div style="border-top:1px solid var(--bd);margin:16px 0"></div>
+      <div style="font-size:11px;color:var(--tx3);line-height:1.6">
+        <strong style="color:var(--tx2)">Security note:</strong>
+        The key is stored only in this browser session and in the HTML file itself.
+        Do not upload or share this file if it contains your key.
+        To use TrialPath publicly, set up a
+        <a href="https://developers.cloudflare.com/workers/" target="_blank" style="color:var(--blm)">Cloudflare Worker proxy</a>
+        so the key lives on a server, not in the browser.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="cmpM"><div class="modal" style="max-width:960px"><div class="mh"><h2>Compare trials</h2><button class="mc2" onclick="closeM('cmpM')"><i class="fa-solid fa-xmark"></i></button></div><div class="mb" id="cmpBody"></div></div></div>
+<div class="mbg" id="shareM"><div class="modal" style="max-width:640px"><div class="mh"><h2>Caregiver / doctor report</h2><button class="mc2" onclick="closeM('shareM')"><i class="fa-solid fa-xmark"></i></button></div><div class="mb" id="shareBody"></div></div></div>
+<div class="tov" id="tov"><span class="spin sdk"></span> Translating interface…</div>
+<div class="toast" id="toast"></div>
+<div class="wm">© 2026 TrialPath</div>
+<!-- AI ERROR POPUP -->
+<div id="aiErrorOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--sf);border-radius:16px;max-width:440px;width:100%;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size:20px;color:var(--amm)"></i>
+      <h2 style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--tx)">AI feature unavailable</h2>
+    </div>
+    <p id="aiErrorMsg" style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:16px">The AI request failed. Check your API key in Settings.</p>
+    <div style="display:flex;gap:8px">
+      <button onclick="openM('settingsM');closeAIErrorPopup()" style="flex:1;padding:9px;background:var(--g);color:#fff;border:none;border-radius:var(--rx);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">
+        <i class="fa-solid fa-gear"></i> Open Settings
+      </button>
+      <button onclick="closeAIErrorPopup()" style="padding:9px 14px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rx);font-family:inherit;font-size:13px;cursor:pointer">
+        Dismiss
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════════════
+//  TRIALPATH — CLEAN REWRITE
+//  All bugs fixed: no MDL ref, no stale banner, proper
+//  AI error popup, filters/tabs work independently of AI
+// ════════════════════════════════════════════════════════
+
+// ── AI CONFIGURATION ──
+var CFG = {
+  key:      '',
+  provider: 'anthropic',
+  model:    'claude-haiku-4-5-20251001',
+  baseUrl:  ''
+};
+
+// ── PROVIDER DEFINITIONS ──
+var PROVIDERS = {
+  anthropic: {
+    label: 'Claude AI (Anthropic)',
+    hint:  'sk-ant-… (console.anthropic.com)',
+    call: async function(prompt, maxT) {
+      var res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': CFG.key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: CFG.model,
+          max_tokens: maxT,
+          messages: [{role:'user', content: prompt}]
+        })
+      });
+      if(!res.ok){ var t=await res.text(); throw new Error('Anthropic '+res.status+': '+t.slice(0,200)); }
+      var d = await res.json();
+      if(d.error) throw new Error(d.error.message || JSON.stringify(d.error));
+      var txt = d.content && d.content[0] ? d.content[0].text||'' : '';
+      if(!txt) throw new Error('Empty response from Claude');
+      return txt;
+    }
+  },
+  google: {
+    label: 'Google Gemini',
+    hint:  'AIza… (aistudio.google.com)',
+    call: async function(prompt, maxT) {
+      var model = CFG.model.replace(/:free$/,'');
+      var url = 'https://generativelanguage.googleapis.com/v1beta/models/'
+                + model + ':generateContent?key=' + CFG.key;
+      var res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          contents: [{parts:[{text: prompt}]}],
+          generationConfig: {maxOutputTokens: maxT, temperature: 0.4}
+        })
+      });
+      if(!res.ok){ var t=await res.text(); throw new Error('Google '+res.status+': '+t.slice(0,200)); }
+      var d = await res.json();
+      if(d.error) throw new Error(d.error.message||JSON.stringify(d.error));
+      var txt = '';
+      try{ txt = d.candidates[0].content.parts[0].text || ''; }catch(e){ txt=''; }
+      if(!txt && d.promptFeedback) throw new Error('Blocked by Google safety filters');
+      if(!txt) throw new Error('Empty Google response');
+      return txt;
+    }
+  },
+  openrouter: {
+    label: 'OpenRouter',
+    hint:  'sk-or-v1-… (openrouter.ai)',
+    call: async function(prompt, maxT) {
+      var res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + CFG.key,
+          'HTTP-Referer': 'https://trialpath.io',
+          'X-Title': 'TrialPath'
+        },
+        body: JSON.stringify({
+          model: CFG.model,
+          max_tokens: maxT,
+          messages: [{role:'user', content: prompt}]
+        })
+      });
+      if(!res.ok){ var t=await res.text(); throw new Error('OpenRouter '+res.status+': '+t.slice(0,200)); }
+      var d = await res.json();
+      if(d.error) throw new Error(d.error.message||JSON.stringify(d.error));
+      var txt = '';
+      try{ txt = d.choices[0].message.content || ''; }catch(e){ txt=''; }
+      if(!txt) throw new Error('Empty OpenRouter response');
+      return txt;
+    }
+  },
+  custom: {
+    label: 'Custom (OpenAI-compatible)',
+    hint:  'API key (optional) — http://localhost:11434/v1',
+    call: async function(prompt, maxT) {
+      var url = (CFG.baseUrl || '').replace(/\/+$/, '') + '/chat/completions';
+      var headers = {'Content-Type': 'application/json'};
+      if(CFG.key) headers['Authorization'] = 'Bearer ' + CFG.key;
+      var res = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          model: CFG.model,
+          max_tokens: maxT,
+          messages: [{role:'user', content: prompt}]
+        })
+      });
+      if(!res.ok){ var t=await res.text(); throw new Error('Custom '+res.status+': '+t.slice(0,200)); }
+      var d = await res.json();
+      if(d.error) throw new Error(d.error.message||JSON.stringify(d.error));
+      var txt = '';
+      try{ txt = d.choices[0].message.content || ''; }catch(e){ txt=''; }
+      if(!txt) throw new Error('Empty response from custom API');
+      return txt;
+    }
+  }
+};
+
+// ── MAIN AI CALL (with auto-retry on rate limits) ──
+async function callAI(prompt, maxT) {
+  maxT = maxT || 800;
+  var prov = PROVIDERS[CFG.provider] || PROVIDERS.anthropic;
+  if(CFG.provider === 'custom') {
+    if(!CFG.baseUrl) throw new Error('NO_KEY');
+  } else {
+    if(!CFG.key || CFG.key.length < 10) throw new Error('NO_KEY');
+  }
+  var lastErr;
+  for(var att=0; att<3; att++){
+    try { return await prov.call(prompt, maxT); }
+    catch(e){
+      lastErr=e;
+      if(e.message && e.message.includes('429')) {
+        if(att<2) await new Promise(function(r){ return setTimeout(r, (att+1)*2000); });
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw lastErr;
+}
+
+// ── ROBUST JSON EXTRACTOR ──
+function extractJSON(raw) {
+  var txt = raw.replace(/```[\w]*\n?|```/g, '').trim();
+  // Try to find a top-level JSON object or array
+  var open = txt.indexOf('{');
+  var arrOpen = txt.indexOf('[');
+  if(open === -1 && arrOpen === -1) throw new Error('No JSON in response');
+  var start = open !== -1 ? open : arrOpen;
+  var closeChar = txt[start] === '{' ? '}' : ']';
+  var depth = 0, inStr = false, escape = false;
+  for(var i = start; i < txt.length; i++){
+    var ch = txt[i];
+    if(escape){ escape = false; continue; }
+    if(ch === '\\' && inStr){ escape = true; continue; }
+    if(ch === '"'){ inStr = !inStr; continue; }
+    if(inStr) continue;
+    if(ch === txt[start]) depth++;
+    else if(ch === closeChar){ depth--; if(depth === 0) return JSON.parse(txt.slice(start, i+1)); }
+  }
+  throw new Error('No JSON in response');
+}
+
+// ── CONSTANTS ──
+var CTAPI = 'https://clinicaltrials.gov/api/v2/studies';
+var FIELDS = 'NCTId,BriefTitle,OfficialTitle,OverallStatus,Phase,StudyType,' +
+  'EnrollmentCount,StartDate,PrimaryCompletionDate,' +
+  'Condition,InterventionName,BriefSummary,DetailedDescription,' +
+  'EligibilityCriteria,MinimumAge,MaximumAge,Gender,HealthyVolunteers,' +
+  'LeadSponsorName,LocationFacility,LocationCity,LocationState,' +
+  'LocationCountry,LocationGeoPoint,StdAge';
+
+// ── STATE ──
+var rawTrials=[], allTrials=[], eligScores={}, sumCache={}, riskCache={}, coachCache={}, transCache={};
+var bookmarks  = new Set(JSON.parse(localStorage.getItem('tp_bm')  || '[]'));
+var compareSet = new Set(JSON.parse(localStorage.getItem('tp_cmp') || '[]'));
+var alerts     = JSON.parse(localStorage.getItem('tp_al') || '[]');
+var currentTab = 'all', userCoords = null, currentLang = 'en';
+
+// Continent map
+var CONT = {
+  north_america:['united states','canada','mexico','costa rica','panama','cuba','jamaica','guatemala'],
+  south_america:['brazil','argentina','chile','colombia','peru','venezuela','ecuador','bolivia','uruguay'],
+  europe:['united kingdom','england','scotland','wales','germany','france','italy','spain','netherlands',
+          'belgium','sweden','norway','denmark','finland','austria','switzerland','portugal','poland',
+          'czech','hungary','romania','greece','turkey','ukraine','russia','ireland','croatia'],
+  africa:['south africa','nigeria','kenya','ghana','ethiopia','egypt','morocco','tanzania','uganda','zimbabwe'],
+  asia:['china','japan','south korea','india','singapore','taiwan','hong kong','thailand','malaysia',
+        'indonesia','philippines','vietnam','bangladesh','pakistan','sri lanka'],
+  middle_east:['israel','saudi arabia','united arab emirates','iran','iraq','jordan','lebanon','kuwait','qatar'],
+  oceania:['australia','new zealand','papua new guinea','fiji']
+};
+
+// ── HELPERS ──
+function g(id) { return document.getElementById(id); }
+function gv(id) { var e=g(id); return e ? e.value.trim() : ''; }
+
+function showToast(msg, dur) {
+  var t = g('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, dur||2600);
+}
+
+function nctId(s)  { return s.protocolSection && s.protocolSection.identificationModule ? s.protocolSection.identificationModule.nctId || '' : ''; }
+function phaseNum(s){ var p=(s.protocolSection&&s.protocolSection.designModule&&s.protocolSection.designModule.phases||[''])[0]; return {'PHASE4':4,'PHASE3':3,'PHASE2':2,'PHASE1':1,'NA':0}[p]||0; }
+
+function travelKm(s) {
+  if(!userCoords) return 9999;
+  var locs = s.protocolSection && s.protocolSection.contactsLocationsModule ? s.protocolSection.contactsLocationsModule.locations||[] : [];
+  var wg = locs.filter(function(l){ return l.geoPoint && l.geoPoint.lat && l.geoPoint.lon; });
+  if(!wg.length) return 9999;
+  function toRad(d){ return d*Math.PI/180; }
+  function hav(a,b,c,d){ var R=6371,dLat=toRad(c-a),dLon=toRad(d-b),x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(toRad(a))*Math.cos(toRad(c))*Math.sin(dLon/2)*Math.sin(dLon/2);return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))); }
+  return Math.min.apply(null, wg.map(function(l){ return hav(userCoords.lat,userCoords.lng,l.geoPoint.lat,l.geoPoint.lon); }));
+}
+
+function isVirtual(s) {
+  var pm = s.protocolSection||{};
+  var txt = [(pm.descriptionModule&&pm.descriptionModule.briefSummary)||'',
+             (pm.identificationModule&&pm.identificationModule.briefTitle)||''].join(' ').toLowerCase();
+  return /\bremote\b|\bvirtual\b|\bdecentrali|\btelehealth\b|home[-\s]based|\bdct\b/.test(txt);
+}
+
+function isDiversity(s) {
+  var pm = s.protocolSection||{};
+  var txt = [(pm.descriptionModule&&pm.descriptionModule.briefSummary)||'',
+             (pm.eligibilityModule&&pm.eligibilityModule.eligibilityCriteria)||'',
+             (pm.identificationModule&&pm.identificationModule.briefTitle)||''].join(' ').toLowerCase();
+  var re = /underrepresent|minority population|racial diversity|ethnic diversity|health equity|health disparity|african[-\s]american|black patient|hispanic patient|\blatinx\b|indigenous population|native american|underserved communit|diversity enrollment/;
+  return re.test(txt);
+}
+
+function conditionMatches(s, q) {
+  if(!q) return true;
+  var terms = q.toLowerCase().split(/\s+/).filter(function(t){ return t.length>2; });
+  if(!terms.length) return true;
+  var pm = s.protocolSection||{};
+  // PRIMARY: check conditions list and title first (stricter)
+  var condText = (pm.conditionsModule&&pm.conditionsModule.conditions||[]).join(' ').toLowerCase();
+  var titleText = (pm.identificationModule&&pm.identificationModule.briefTitle||'').toLowerCase();
+  var primaryHay = condText + ' ' + titleText;
+  var primaryMatch = terms.filter(function(t){ return primaryHay.includes(t); });
+  if(primaryMatch.length >= Math.max(1, Math.ceil(terms.length*0.6))) return true;
+  // SECONDARY: check brief summary but require stronger match
+  var summaryText = (pm.descriptionModule&&pm.descriptionModule.briefSummary||'').toLowerCase();
+  var fullHay = primaryHay + ' ' + summaryText;
+  var fullMatch = terms.filter(function(t){ return fullHay.includes(t); });
+  return fullMatch.length >= Math.max(2, Math.ceil(terms.length*0.8));
+}
+
+// ── INIT ──
+// ── SIDEBAR TABS ──
+function sTab(tab, btn) {
+  var map = {s:'t-s', e:'t-e', sv:'t-sv', al:'t-al'};
+  document.querySelectorAll('.sb-tab').forEach(function(t){ t.classList.remove('on'); });
+  document.querySelectorAll('.sb-c').forEach(function(c){ c.style.display='none'; });
+  if(btn) btn.classList.add('on');
+  var target = g(map[tab]);
+  if(target) target.style.display='block';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var qEl = g('query');
+  if(qEl) qEl.addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
+  renderBookmarks();
+  renderAlerts();
+  updateCompareBadge();
+  // Close modals on backdrop click
+  document.querySelectorAll('.mbg').forEach(function(bg){
+    bg.addEventListener('click', function(e){ if(e.target===bg) bg.classList.remove('open'); });
+  });
+  // Check key on load — show indicator in header
+  refreshKeyIndicator();
+});
+
+// ── KEY INDICATOR in header ──
+function refreshKeyIndicator() {
+  var ind = g('keyIndicator');
+  if(!ind) return;
+  var isCustom = CFG.provider === 'custom';
+  var active = (CFG.key && CFG.key.length > 10) || (isCustom && CFG.baseUrl);
+  if(active) {
+    ind.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#3A7A1A;font-size:11px"></i>';
+    ind.title = 'AI active — ' + (PROVIDERS[CFG.provider]||{label:'AI'}).label;
+  } else {
+    ind.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#C07010;font-size:11px"></i>';
+    ind.title = 'No API key — click Settings';
+  }
+}
+
+// ── AI ERROR POPUP (shown when AI call fails) ──
+function showAIErrorPopup(msg) {
+  var overlay = g('aiErrorOverlay');
+  var msgEl   = g('aiErrorMsg');
+  if(!overlay) return;
+  if(msgEl) msgEl.textContent = msg || 'The AI request failed. Check your API key in Settings.';
+  overlay.style.display = 'flex';
+}
+function closeAIErrorPopup() {
+  var overlay = g('aiErrorOverlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+// ── SEARCH (pure ClinicalTrials.gov — no AI, always works) ──
+async function doSearch() {
+  var q = gv('query');
+  if(!q) { showToast('Enter a condition, drug, or keyword'); return; }
+
+  var btn = g('searchBtn');
+  if(btn) { btn.disabled=true; btn.innerHTML='<span class="spin"></span> Searching…'; }
+
+  var phase  = gv('phase');
+  var status = gv('status');
+  var age    = gv('ageG');
+  var sex    = gv('sex');
+
+  var adv = [];
+  if(phase) adv.push('AREA[Phase]'+phase);
+  if(age)   adv.push('AREA[StdAge]'+age);
+  if(sex)   adv.push('AREA[Sex]'+sex.toUpperCase());
+
+  var url = new URL(CTAPI);
+  url.searchParams.set('query.cond', q);
+  url.searchParams.set('pageSize', '25');
+  url.searchParams.set('format', 'json');
+  url.searchParams.set('fields', FIELDS);
+  if(status) url.searchParams.set('filter.overallStatus', status);
+  if(adv.length) url.searchParams.set('filter.advanced', adv.join(' AND '));
+
+  try {
+    var res  = await fetch(url.toString());
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var data = await res.json();
+    // Post-filter by condition relevance
+    rawTrials = (data.studies||[]).filter(function(s){ return conditionMatches(s,q); });
+    allTrials = applyClientFilters(rawTrials);
+    eligScores={}; sumCache={}; riskCache={}; coachCache={};
+    currentTab='all';
+    ['tAll','tBm','tVirt','tDiv'].forEach(function(id){
+      var el=g(id); if(el) el.classList.toggle('on', id==='tAll');
+    });
+    renderAll();
+    updateActiveFilters();
+    var extra = rawTrials.length!==allTrials.length ? ' ('+allTrials.length+' after filters)' : '';
+    showToast('Found '+rawTrials.length+' trial'+(rawTrials.length!==1?'s':'')+extra);
+    if(gv('eCond')) runEligibility();
+  } catch(e) {
+    console.error('Search error:', e);
+    showToast('Could not fetch trials — check your connection', 4000);
+  }
+
+  if(btn) { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-magnifying-glass"></i> Search Trials'; }
+}
+
+// ── CLIENT FILTERS (work independently of AI) ──
+function applyClientFilters(trials) {
+  var list = trials.slice();
+
+  // Continent
+  var cont = gv('cont');
+  if(cont && CONT[cont]) {
+    var cTargets = CONT[cont];
+    list = list.filter(function(s) {
+      var locs = s.protocolSection&&s.protocolSection.contactsLocationsModule ? s.protocolSection.contactsLocationsModule.locations||[] : [];
+      if(!locs.length) return false;
+      return locs.some(function(l){ var c=(l.country||'').toLowerCase(); return cTargets.some(function(t){ return c.includes(t); }); });
+    });
+  }
+
+  // Location text
+  var locRaw = gv('loc').toLowerCase();
+  if(locRaw) {
+    var ALIAS = {'uk':['united kingdom','england','scotland','wales'],'usa':['united states'],'us':['united states'],'uae':['united arab emirates']};
+    var targets = ALIAS[locRaw]||[locRaw];
+    list = list.filter(function(s) {
+      var locs = s.protocolSection&&s.protocolSection.contactsLocationsModule ? s.protocolSection.contactsLocationsModule.locations||[] : [];
+      if(!locs.length) return false;
+      return locs.some(function(l){
+        var country=(l.country||'').toLowerCase(), city=(l.city||'').toLowerCase(), state=(l.state||'').toLowerCase();
+        return targets.some(function(t){ return country.includes(t)||city.includes(t)||state.includes(t); });
+      });
+    });
+  }
+
+  // Virtual checkbox
+  if(g('virt')&&g('virt').checked) list = list.filter(isVirtual);
+
+  // Diversity checkbox
+  if(g('div')&&g('div').checked) list = list.filter(isDiversity);
+
+  return list;
+}
+
+function apiFilterChanged() {
+  updateActiveFilters();
+  var q = gv('query');
+  if(q && rawTrials.length>0) doSearch();
+}
+
+function clientFilterChanged() {
+  updateActiveFilters();
+  if(rawTrials.length>0) { allTrials=applyClientFilters(rawTrials); renderAll(); }
+}
+
+var _locTimer=null;
+function debounceLocation(){ clearTimeout(_locTimer); _locTimer=setTimeout(clientFilterChanged,600); }
+
+function toggleGPS(cb) {
+  if(cb.checked){
+    g('gpsS').textContent='Locating…';
+    navigator.geolocation.getCurrentPosition(
+      function(p){ userCoords={lat:p.coords.latitude,lng:p.coords.longitude}; g('gpsS').textContent='✓ Located'; g('loc').value=''; g('loc').placeholder='Using GPS'; },
+      function(){ g('gpsS').textContent='Denied'; cb.checked=false; }
+    );
+  } else { userCoords=null; g('gpsS').textContent=''; g('loc').placeholder='e.g. United Kingdom, London…'; }
+}
+
+function updateActiveFilters() {
+  var phase=gv('phase'),status=gv('status'),age=gv('ageG'),sex=gv('sex'),cont=gv('cont'),loc=gv('loc');
+  var virt=g('virt')&&g('virt').checked, div=g('div')&&g('div').checked;
+  var vals=[];
+  var pm={'PHASE1':'Phase 1','PHASE2':'Phase 2','PHASE3':'Phase 3','PHASE4':'Phase 4'};
+  var sm={'NOT_YET_RECRUITING':'Not yet open','RECRUITING':'Recruiting','ENROLLING_BY_INVITATION':'By invitation','ACTIVE_NOT_RECRUITING':'Active'};
+  var am={'CHILD':'Child','ADULT':'Adult','OLDER_ADULT':'65+'};
+  var cm={'north_america':'North America','south_america':'South America','europe':'Europe','africa':'Africa','asia':'Asia','middle_east':'Middle East','oceania':'Oceania'};
+  if(phase) vals.push(pm[phase]||phase);
+  if(status) vals.push(sm[status]||status);
+  if(age)   vals.push(am[age]||age);
+  if(sex)   vals.push(sex.charAt(0).toUpperCase()+sex.slice(1));
+  if(cont)  vals.push('🌍 '+(cm[cont]||cont));
+  if(loc)   vals.push('📍 '+loc);
+  if(virt)  vals.push('Virtual only');
+  if(div)   vals.push('Diversity focus');
+  var badge=g('fbadge'), chips=g('fchips');
+  if(vals.length){ if(chips) chips.innerHTML=vals.map(function(v){ return '<span style="background:var(--aml);color:var(--am);font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600">'+v+'</span>'; }).join(''); if(badge) badge.style.display='block'; }
+  else { if(badge) badge.style.display='none'; }
+}
+
+function clearFilters() {
+  ['phase','status','ageG','sex','cont'].forEach(function(id){ var e=g(id); if(e) e.value=''; });
+  var l=g('loc'); if(l) l.value='';
+  var v=g('virt'); if(v) v.checked=false;
+  var d=g('div');  if(d) d.checked=false;
+  updateActiveFilters();
+  if(rawTrials.length>0){ var q=gv('query'); if(q) doSearch(); else{ allTrials=rawTrials; renderAll(); } }
+}
+
+// ── RENDER ──
+function renderAll() {
+  var toolbar=g('toolbar');
+  if(toolbar) toolbar.style.display=rawTrials.length?'flex':'none';
+  renderCards(getView());
+}
+
+function getView() {
+  var list = allTrials.slice();
+  if(currentTab==='bm')   list=list.filter(function(s){ return bookmarks.has(nctId(s)); });
+  if(currentTab==='virt') list=list.filter(isVirtual);
+  if(currentTab==='div')  list=list.filter(isDiversity);
+  var sort = gv('sortBy')||'def';
+  if(sort==='elig')   list.sort(function(a,b){ return (eligScores[nctId(b)]||0)-(eligScores[nctId(a)]||0); });
+  if(sort==='phase')  list.sort(function(a,b){ return phaseNum(b)-phaseNum(a); });
+  if(sort==='enroll') list.sort(function(a,b){ return (b.protocolSection&&b.protocolSection.designModule&&b.protocolSection.designModule.enrollmentInfo&&b.protocolSection.designModule.enrollmentInfo.count||0)-(a.protocolSection&&a.protocolSection.designModule&&a.protocolSection.designModule.enrollmentInfo&&a.protocolSection.designModule.enrollmentInfo.count||0); });
+  if(sort==='dist')   list.sort(function(a,b){ return travelKm(a)-travelKm(b); });
+  return list;
+}
+
+function renderCards(list) {
+  var body=g('rbody');
+  if(!body) return;
+  var sv=allTrials.reduce(function(a,s){ var t=s.protocolSection&&s.protocolSection.statusModule?s.protocolSection.statusModule.overallStatus||'O':'O'; a[t]=(a[t]||0)+1; return a; },{});
+  var rcnt=g('rcnt'); if(rcnt) rcnt.textContent=list.length+' trial'+(list.length!==1?'s':'');
+  if(!list.length){ body.innerHTML='<div class="empty"><i class="fa-regular fa-circle-xmark"></i><h3>No trials found</h3><p>Try a broader search or adjust your filters.</p></div>'; return; }
+  var stats='<div class="ss">'+
+    '<div class="sb"><div class="sbn">'+allTrials.length+'</div><div class="sbl">Total</div></div>'+
+    '<div class="sb"><div class="sbn">'+(sv['RECRUITING']||0)+'</div><div class="sbl">Recruiting</div></div>'+
+    '<div class="sb"><div class="sbn">'+(sv['NOT_YET_RECRUITING']||0)+'</div><div class="sbl">Not yet open</div></div>'+
+    '<div class="sb"><div class="sbn">'+allTrials.filter(isVirtual).length+'</div><div class="sbl">Virtual</div></div>'+
+    '</div>';
+  body.innerHTML = stats + list.map(function(s){ return cHtml(s, allTrials.indexOf(s)); }).join('');
+}
+
+// ── CARD HTML ──
+function cHtml(s, idx) {
+  var pm=s.protocolSection||{}, idm=pm.identificationModule||{};
+  var nct=nctId(s), title=idm.briefTitle||idm.officialTitle||'Untitled study';
+  var status=(pm.statusModule&&pm.statusModule.overallStatus)||'';
+  var phases=(pm.designModule&&pm.designModule.phases)||[];
+  var phStr=phases.length?phases.map(function(p){ return p.replace('PHASE','Phase ').replace('NA','N/A'); }).join(', '):'N/A';
+  var enroll=pm.designModule&&pm.designModule.enrollmentInfo&&pm.designModule.enrollmentInfo.count;
+  var startD=(pm.statusModule&&pm.statusModule.startDateStruct&&pm.statusModule.startDateStruct.date)||'';
+  var endD=(pm.statusModule&&pm.statusModule.primaryCompletionDateStruct&&pm.statusModule.primaryCompletionDateStruct.date)||'';
+  var sponsor=(pm.sponsorCollaboratorsModule&&pm.sponsorCollaboratorsModule.leadSponsor&&pm.sponsorCollaboratorsModule.leadSponsor.name)||'';
+  var locs=(pm.contactsLocationsModule&&pm.contactsLocationsModule.locations)||[];
+  var cntrs=[...new Set(locs.map(function(l){ return l.country; }).filter(Boolean))].slice(0,4).join(', ')||'Not specified';
+  var conds=(pm.conditionsModule&&pm.conditionsModule.conditions)||[];
+  var ints=((pm.armsInterventionsModule&&pm.armsInterventionsModule.interventions)||[]).map(function(v){ return v.name; }).filter(Boolean);
+  var elig=pm.eligibilityModule||{}, eligCrit=elig.eligibilityCriteria||'';
+  var contacts=(pm.contactsLocationsModule&&pm.contactsLocationsModule.centralContacts)||[];
+  var isBm=bookmarks.has(nct), isCmp=compareSet.has(nct), scv=eligScores[nct], dist=travelKm(s), virt=isVirtual(s), div=isDiversity(s);
+  var bCls={RECRUITING:'brec',NOT_YET_RECRUITING:'bny',ENROLLING_BY_INVITATION:'benv',ACTIVE_NOT_RECRUITING:'bact'}[status]||'bx';
+  var bTxt={RECRUITING:'Recruiting',NOT_YET_RECRUITING:'Not yet open',ENROLLING_BY_INVITATION:'By invitation',ACTIVE_NOT_RECRUITING:'Active'}[status]||status||'—';
+  var eligH=scv!==undefined?'<span class="ep '+(scv>=70?'ehi':scv>=40?'emd':'elo')+'"><i class="fa-solid fa-circle-dot" style="font-size:8px"></i> '+scv+'% fit</span>':'';
+  var distH=(dist<9999&&userCoords)?'<span class="tag ttr"><i class="fa-solid fa-car" style="font-size:9px"></i> ~'+dist+'km</span>':'';
+  var incl='',excl='';
+  if(eligCrit){ var im=eligCrit.match(/inclusion criteria[:\s]+([\s\S]*?)(?=exclusion criteria|$)/i); var em=eligCrit.match(/exclusion criteria[:\s]+([\s\S]*?)$/i); incl=im?im[1].trim().slice(0,500):eligCrit.slice(0,500); excl=em?em[1].trim().slice(0,350):''; }
+  var contH=contacts.slice(0,2).map(function(ct){ var l=(ct.name||''); if(ct.phone)l+=' · '+ct.phone; if(ct.email)l+=' · <a href="mailto:'+ct.email+'" style="color:var(--blm)">'+ct.email+'</a>'; return '<div style="font-size:11px;color:var(--tx2);margin-bottom:3px">'+l+'</div>'; }).join('');
+  var siteL=locs.slice(0,6).map(function(l){ var p=[l.facility,l.city,l.state,l.country].filter(Boolean); return '<span class="pill">'+p.join(', ')+'</span>'; }).join('');
+
+  return '<div class="tc" id="c'+idx+'" onclick="togCard('+idx+')">' +
+    '<div class="ch"><div class="ct">'+title+'</div><span class="badge '+bCls+'">'+bTxt+'</span></div>' +
+    '<div class="cm"><span class="mc"><i class="fa-solid fa-flask"></i> '+phStr+'</span>'+(enroll?'<span class="mc"><i class="fa-solid fa-users"></i> '+enroll.toLocaleString()+'</span>':'')+'<span class="mc"><i class="fa-solid fa-earth-americas"></i> '+cntrs+'</span>'+(startD?'<span class="mc"><i class="fa-regular fa-calendar"></i> '+startD+'</span>':'')+'</div>' +
+    '<div class="ctags">'+(virt?'<span class="tag tv"><i class="fa-solid fa-wifi" style="font-size:9px"></i> Virtual/DCT</span>':'')+(div?'<span class="tag td"><i class="fa-solid fa-people-group" style="font-size:9px"></i> Diversity focus</span>':'')+distH+'</div>' +
+    '<div class="cas"><button class="ib'+(isBm?' bon':'')+'" onclick="event.stopPropagation();togBm(\''+nct+'\','+idx+')" title="Bookmark"><i class="fa-'+(isBm?'solid':'regular')+' fa-bookmark"></i></button>' +
+    '<button class="ib'+(isCmp?' con':'')+'" onclick="event.stopPropagation();togCmp(\''+nct+'\','+idx+')" title="Compare"><i class="fa-solid fa-code-compare"></i></button>' +
+    '<button class="ib" onclick="event.stopPropagation();window.open(\'https://clinicaltrials.gov/study/'+nct+'\',\'_blank\')" title="View on ClinicalTrials.gov"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>' +
+    eligH+'</div>' +
+    '<div class="det" id="d'+idx+'">' +
+    '<div class="aib" id="aib'+idx+'"><div class="ail"><i class="fa-solid fa-sparkles"></i> Plain-language summary</div><div class="ait" id="ai'+idx+'"><span class="blink">●</span> <span style="color:var(--tx3);font-size:12px">Generating…</span></div></div>' +
+    '<div class="pipe"><div class="pipelbl">Drug pipeline position</div>'+pHtml(phases)+'</div>' +
+    '<div class="dg"><div class="df"><label>Sponsor</label><p>'+(sponsor||'Not specified')+'</p></div>' +
+    '<div class="df"><label>Study type</label><p>'+(pm.designModule&&pm.designModule.studyType||'—')+'</p></div>' +
+    '<div class="df"><label>Enrollment</label><p>'+(enroll?enroll.toLocaleString()+' participants':'—')+'</p></div>' +
+    '<div class="df"><label>Dates</label><p>'+(startD?'Start: '+startD:'—')+(endD?'<br>End: '+endD:'')+'</p></div>' +
+    '<div class="df"><label>Age eligibility</label><p>'+(elig.minimumAge||'Any')+(elig.maximumAge?' – '+elig.maximumAge:'')+'</p></div>' +
+    '<div class="df"><label>Sex eligibility</label><p>'+(elig.sex||'All')+(elig.healthyVolunteers?' · Healthy volunteers welcome':'')+'</p></div></div>' +
+    (conds.length?'<div style="margin-bottom:10px"><div class="df" style="margin-bottom:4px"><label>Conditions studied</label></div><div class="pr-row">'+conds.slice(0,8).map(function(c){ return '<span class="pill">'+c+'</span>'; }).join('')+'</div></div>':'') +
+    (ints.length?'<div style="margin-bottom:10px"><div class="df" style="margin-bottom:4px"><label>Interventions / treatments</label></div><div class="pr-row">'+ints.slice(0,6).map(function(v){ return '<span class="pill">'+v+'</span>'; }).join('')+'</div></div>':'') +
+    (incl?'<div class="cbox"><label>Inclusion criteria</label><p>'+incl+(incl.length>=500?'…':'')+'</p>'+(excl?'<label style="color:var(--rd);margin-top:8px;display:block">Exclusion criteria</label><p>'+excl+(excl.length>=350?'…':'')+'</p>':'')+'</div>':'') +
+    (locs.length?'<div style="margin-bottom:10px"><div class="df" style="margin-bottom:4px"><label>Trial sites ('+locs.length+' location'+(locs.length!==1?'s':'')+')</label></div><div class="pr-row">'+siteL+(locs.length>6?'<span class="pill" style="font-style:italic">+'+(locs.length-6)+' more</span>':'')+'</div></div>':'') +
+    (contH?'<div style="margin-bottom:10px"><div class="df" style="margin-bottom:4px"><label>Contact</label></div>'+contH+'</div>':'') +
+    '<div class="rkb"><div class="rkl"><i class="fa-solid fa-shield-halved"></i> Safety &amp; risk overview</div><div id="rk'+idx+'" style="font-size:12px;color:var(--tx2);line-height:1.6"><span class="blink">●</span> <span style="color:var(--rd)">Loading…</span></div></div>' +
+    '<div class="ckb"><div class="ckl"><i class="fa-solid fa-route"></i> Trial readiness coach</div><div id="ck'+idx+'"><div style="font-size:12px;color:var(--g)"><span class="blink">●</span> Building your plan…</div></div></div>' +
+    (div?'<div class="dvw"><div class="dvl"><i class="fa-solid fa-people-group"></i> Diversity enrolment context</div>'+[['Black/African Am.',4],['Hispanic/Latino',4],['Asian',6],['Native American',1],['White',82]].map(function(r){ return '<div class="dvr"><div class="dvn">'+r[0]+'</div><div class="dvt"><div class="dvf" style="width:'+r[1]+'%"></div></div><div class="dvp">'+r[1]+'%</div></div>'; }).join('')+'</div>':'') +
+    '<div class="das">' +
+    '<button class="bsm pr" onclick="event.stopPropagation();window.open(\'https://clinicaltrials.gov/study/'+nct+'\',\'_blank\')"><i class="fa-solid fa-arrow-up-right-from-square"></i> Full record</button>' +
+    '<button class="bsm" onclick="event.stopPropagation();togBm(\''+nct+'\','+idx+')"><i class="fa-'+(isBm?'solid':'regular')+' fa-bookmark"></i> '+(isBm?'Saved':'Save')+'</button>' +
+    '<button class="bsm" onclick="event.stopPropagation();togCmp(\''+nct+'\','+idx+')"><i class="fa-solid fa-code-compare"></i> Compare</button>' +
+    '<button class="bsm" onclick="event.stopPropagation();openShare()"><i class="fa-solid fa-share-nodes"></i> Share</button>' +
+    '</div></div></div>';
+}
+
+// ── PIPELINE ──
+function pHtml(phases) {
+  var steps=['Preclinical','Phase 1','Phase 2','Phase 3','FDA Review','Approved'];
+  var mp={'PHASE1':1,'PHASE2':2,'PHASE3':3,'PHASE4':5,'NA':0};
+  var cur=phases.length?(mp[phases[0]]!=null?mp[phases[0]]:0):0;
+  var h='<div class="ptrack">';
+  steps.forEach(function(s,i){ if(i>0) h+='<div class="pline'+(i<=cur?' dn':'')+'"></div>'; var cls=i<cur?'dn':i===cur?'cu':''; h+='<div class="pstep"><div class="pdot '+cls+'">'+(i<cur?'✓':i+1)+'</div><div class="pnm'+(i===cur?' cu':'')+'">'+s+'</div></div>'; });
+  return h+'</div>';
+}
+
+// ── CARD EXPAND — loads AI in parallel ──
+async function togCard(idx) {
+  var card=g('c'+idx), det=g('d'+idx);
+  if(!card||!det) return;
+  var wasOpen=det.classList.contains('open');
+  document.querySelectorAll('.det').forEach(function(d){ d.classList.remove('open'); });
+  document.querySelectorAll('.tc').forEach(function(c){ c.classList.remove('exp'); });
+  if(!wasOpen){
+    det.classList.add('open'); card.classList.add('exp');
+    // Load all three AI sections in parallel — each handles its own error
+    if(!sumCache[idx])   lSum(idx);
+    if(!riskCache[idx])  lRisk(idx);
+    if(!coachCache[idx]) lCoach(idx);
+  }
+}
+
+// ── AI LOADERS — each shows friendly error, never crashes the page ──
+async function lSum(idx) {
+  var s=allTrials[idx]; if(!s) return;
+  var pm=s.protocolSection||{};
+  var title=(pm.identificationModule&&pm.identificationModule.briefTitle)||'';
+  var phases=((pm.designModule&&pm.designModule.phases)||[]).map(function(p){ return p.replace('PHASE','Phase '); }).join(', ');
+  var conds=((pm.conditionsModule&&pm.conditionsModule.conditions)||[]).join(', ');
+  var ints=((pm.armsInterventionsModule&&pm.armsInterventionsModule.interventions)||[]).map(function(v){ return v.name; }).join(', ');
+  var desc=((pm.descriptionModule&&pm.descriptionModule.briefSummary)||'').slice(0,500);
+  var lang=lnm(currentLang);
+  var prompt='You are a medical communicator. Write exactly 3 sentences in plain '+lang+' for a patient: (1) what this trial is testing, (2) who it is for, (3) why it matters. No jargon, no markdown.\n\nTrial: '+title+'\nPhase: '+phases+'\nConditions: '+conds+'\nInterventions: '+ints+'\nDescription: '+desc;
+  var el=g('ai'+idx);
+  try {
+    var txt=await callAI(prompt,400);
+    sumCache[idx]=txt;
+    if(el){ el.textContent=txt; el.style.color='var(--tx)'; }
+  } catch(e) {
+    console.error('Summary error:',e.message);
+    if(el){
+      var msg=e.message==='NO_KEY'?'⚙ Add your API key in Settings to see AI summaries.'
+             :e.message.includes('401')||e.message.includes('403')?'⚙ API key invalid — update in Settings.'
+             :'Could not generate summary ('+e.message.split(':')[0]+').';
+      el.textContent=msg; el.style.color='var(--rd)';
+    }
+  }
+}
+
+async function lRisk(idx) {
+  var s=allTrials[idx]; if(!s) return;
+  var pm=s.protocolSection||{};
+  var title=(pm.identificationModule&&pm.identificationModule.briefTitle)||'Unknown trial';
+  var ints=((pm.armsInterventionsModule&&pm.armsInterventionsModule.interventions)||[]).map(function(v){ return v.name; }).filter(Boolean).join(', ')||'Not specified';
+  var phase=((pm.designModule&&pm.designModule.phases)||[]).map(function(p){ return p.replace('PHASE','Phase '); }).join(', ')||'Not specified';
+  var conds=((pm.conditionsModule&&pm.conditionsModule.conditions)||[]).join(', ')||'Not specified';
+  var lang=lnm(currentLang);
+  var prompt='Write exactly 3 plain-language sentences in '+lang+' for a patient about safety: (1) what this treatment involves at this phase, (2) the most common side effects patients experience, (3) what safety monitoring is typically done. Be factual and concise. No markdown.\n\nTrial: '+title+'\nPhase: '+phase+'\nCondition: '+conds+'\nIntervention: '+ints;
+  var el=g('rk'+idx);
+  try {
+    var txt=await callAI(prompt,350);
+    riskCache[idx]=txt;
+    if(el){ el.textContent=txt; el.style.color='var(--tx2)'; }
+  } catch(e) {
+    console.error('Risk error:',e.message);
+    if(el){
+      var msg=e.message==='NO_KEY'?'⚙ Add your API key in Settings to see safety overview.'
+             :e.message.includes('401')||e.message.includes('403')?'⚙ API key invalid — update in Settings.'
+             :'Could not load safety data.';
+      el.textContent=msg; el.style.color='var(--rd)';
+    }
+  }
+}
+
+async function lCoach(idx) {
+  var s=allTrials[idx]; if(!s) return;
+  var pm=s.protocolSection||{};
+  var title=(pm.identificationModule&&pm.identificationModule.briefTitle)||'this trial';
+  var status=(pm.statusModule&&pm.statusModule.overallStatus)||'';
+  var conds=((pm.conditionsModule&&pm.conditionsModule.conditions)||[]).slice(0,3).join(', ')||'Not specified';
+  var elig=pm.eligibilityModule||{};
+  var sponsor=(pm.sponsorCollaboratorsModule&&pm.sponsorCollaboratorsModule.leadSponsor&&pm.sponsorCollaboratorsModule.leadSponsor.name)||'the research team';
+  var lang=lnm(currentLang);
+  var prompt='List exactly 4 action steps in '+lang+' numbered 1 to 4. Each step is 1-2 sentences. Format strictly as:\n1. [step]\n2. [step]\n3. [step]\n4. [step]\nCover: (1) how to check eligibility with GP/doctor given the age and sex criteria, (2) specific questions to ask '+sponsor+', (3) what documents and information to bring to the screening appointment, (4) exact next step to register interest. Make it practical and specific. No markdown, no extra text.\n\nTrial: '+title+'\nStatus: '+status+'\nCondition: '+conds+'\nAge: '+(elig.minimumAge||'any')+' to '+(elig.maximumAge||'any')+'\nSex: '+(elig.sex||'All');
+  var el=g('ck'+idx);
+  try {
+    var txt=await callAI(prompt,500);
+    coachCache[idx]=txt;
+    // Robust step parsing
+    var steps=[];
+    var lines=txt.split('\n').map(function(l){ return l.trim(); }).filter(function(l){ return l.length>5; });
+    lines.forEach(function(line){
+      var stripped=line.replace(/^\d+[.):]\s*/,'').trim();
+      if(stripped.length>10) steps.push(stripped);
+    });
+    if(!steps.length) steps=[txt]; // fallback: show raw text
+    if(el) el.innerHTML=steps.slice(0,4).map(function(st,n){
+      return '<div class="cks"><div class="ckn">'+(n+1)+'</div><div class="ckt">'+st+'</div></div>';
+    }).join('');
+  } catch(e) {
+    console.error('Coach error:',e.message);
+    if(el){
+      var msg=e.message==='NO_KEY'?'⚙ Add your API key in Settings to see action steps.'
+             :e.message.includes('401')||e.message.includes('403')?'⚙ API key invalid — update in Settings.'
+             :'Could not load action steps ('+e.message.split(':')[0]+').';
+      el.innerHTML='<div style="font-size:12px;color:var(--rd)">'+msg+'</div>';
+    }
+  }
+}
+
+async function runEligibility() {
+  var cond=gv('eCond');
+  if(!cond){ showToast('Enter your conditions first'); return; }
+  if(!allTrials.length){ showToast('Search for trials first'); return; }
+  if(!CFG.key||CFG.key.length<10){ openM('settingsM'); showToast('Add your API key in Settings first'); return; }
+  var age=gv('eAge'),sex=gv('eSex'),meds=gv('eMeds'),eth=gv('eEth');
+  var el=g('eligS');
+  if(el){ el.textContent='Scoring trials… (~10 seconds)'; el.style.color='var(--tx3)'; }
+  var batch=allTrials.slice(0,12);
+  var trialData=batch.map(function(s,i){
+    var pm=s.protocolSection||{}, e=pm.eligibilityModule||{};
+    return 'TRIAL_'+i+'_ID:'+nctId(s)+'\nTitle: '+((pm.identificationModule&&pm.identificationModule.briefTitle)||'')+'\nAge: '+(e.minimumAge||'any')+' to '+(e.maximumAge||'any')+'\nSex: '+(e.sex||'All')+'\nCriteria: '+(e.eligibilityCriteria||'').slice(0,400);
+  }).join('\n\n===\n\n');
+  var prompt='You are a clinical eligibility screener. Score each trial 0-100 for this patient. 100=highly likely eligible, 0=very unlikely. Consider age, sex, diagnosis, medications vs trial criteria.\n\nPatient:\nAge: '+(age||'not stated')+'\nSex: '+(sex||'not stated')+'\nEthnicity: '+(eth||'not stated')+'\nDiagnosis/Conditions: '+cond+'\nMedications: '+(meds||'none')+'\n\nTrials to score:\n'+trialData+'\n\nRules: Return ONLY valid JSON. No explanations, no markdown, no extra text. Format: {"scores":{"NCT12345678":85,"NCT87654321":42}}';
+  try {
+    var txt=await callAI(prompt,1000);
+    console.log('Eligibility raw:',txt);
+    var parsed=extractJSON(txt);
+    eligScores=parsed.scores||parsed||{};
+    var cnt=Object.keys(eligScores).length;
+    if(el){ el.textContent='✓ Scored '+cnt+' trial'+(cnt!==1?'s':'')+' — sort by "Eligibility fit" to rank.'; el.style.color='var(--gm)'; }
+    renderAll();
+  } catch(e) {
+    if(el){ el.textContent='Scoring failed: '+(e.message==='NO_KEY'?'Add API key in Settings.':e.message); el.style.color='var(--rd)'; }
+    if(e.message!=='NO_KEY') showAIErrorPopup('Eligibility scoring failed: '+e.message+'\n\nCheck your API key in Settings (⚙).');
+  }
+}
+
+// ── TABS ──
+function swTab(tab) {
+  currentTab=tab;
+  var m={all:'tAll',bm:'tBm',virt:'tVirt',div:'tDiv'};
+  Object.values(m).forEach(function(id){ var el=g(id); if(el) el.classList.remove('on'); });
+  var active=m[tab]; if(active&&g(active)) g(active).classList.add('on');
+  renderCards(getView());
+}
+
+// ── BOOKMARKS ──
+function togBm(nct,idx) {
+  if(bookmarks.has(nct)) bookmarks.delete(nct); else bookmarks.add(nct);
+  localStorage.setItem('tp_bm',JSON.stringify([...bookmarks]));
+  renderBookmarks(); renderAll();
+  showToast(bookmarks.has(nct)?'Bookmarked!':'Bookmark removed');
+}
+
+function renderBookmarks() {
+  var el=g('bmList'); if(!el) return;
+  if(!bookmarks.size){ el.innerHTML='<div class="emsg">No bookmarks yet</div>'; return; }
+  var saved=allTrials.filter(function(s){ return bookmarks.has(nctId(s)); });
+  if(!saved.length){ el.innerHTML=[...bookmarks].map(function(id){ return '<div class="li"><span class="li-tx">'+id+'</span></div>'; }).join(''); return; }
+  el.innerHTML=saved.map(function(s){
+    var nct=nctId(s), title=(s.protocolSection&&s.protocolSection.identificationModule&&s.protocolSection.identificationModule.briefTitle)||nct, idx=allTrials.indexOf(s);
+    return '<div class="li" onclick="toCard('+idx+')"><div class="li-tx">'+(title.length>55?title.slice(0,55)+'…':title)+'</div><button class="li-del" onclick="event.stopPropagation();togBm(\''+nct+'\','+idx+')"><i class="fa-solid fa-xmark"></i></button></div>';
+  }).join('');
+}
+
+function toCard(idx){ var el=g('c'+idx); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); togCard(idx); } }
+
+// ── COMPARE ──
+function togCmp(nct,idx) {
+  if(!compareSet.has(nct)&&compareSet.size>=4){ showToast('Max 4 trials to compare'); return; }
+  if(compareSet.has(nct)) compareSet.delete(nct); else compareSet.add(nct);
+  localStorage.setItem('tp_cmp',JSON.stringify([...compareSet]));
+  updateCompareBadge(); rCmpList(); renderAll();
+  showToast(compareSet.has(nct)?'Added to compare':'Removed from compare');
+}
+
+function updateCompareBadge() {
+  var btn=g('cmpBtn'),cnt=g('cmpCnt');
+  if(btn){ btn.style.display=compareSet.size>=2?'flex':'none'; if(cnt) cnt.textContent=compareSet.size; }
+}
+
+function rCmpList() {
+  var el=g('cmpList'); if(!el) return;
+  if(!compareSet.size){ el.innerHTML='<div class="emsg">Add trials to compare</div>'; return; }
+  var saved=allTrials.filter(function(s){ return compareSet.has(nctId(s)); });
+  el.innerHTML=saved.map(function(s){ return '<div class="li"><div class="li-tx">'+((s.protocolSection&&s.protocolSection.identificationModule&&s.protocolSection.identificationModule.briefTitle)||nctId(s)).slice(0,52)+'…</div><button class="li-del" onclick="togCmp(\''+nctId(s)+'\',-1)"><i class="fa-solid fa-xmark"></i></button></div>'; }).join('');
+}
+
+async function bldCmp() {
+  var trials=allTrials.filter(function(s){ return compareSet.has(nctId(s)); });
+  var cmpBody=g('cmpBody');
+  if(trials.length<2){ if(cmpBody) cmpBody.innerHTML='<p style="color:var(--tx2);padding:16px">Add at least 2 trials to compare.</p>'; return; }
+  var cols=trials.length;
+  var rows=[
+    ['Trial',trials.map(function(s){ return (s.protocolSection&&s.protocolSection.identificationModule&&s.protocolSection.identificationModule.briefTitle)||'—'; })],
+    ['Status',trials.map(function(s){ return ({RECRUITING:'Recruiting',NOT_YET_RECRUITING:'Not yet open',ACTIVE_NOT_RECRUITING:'Active'}[(s.protocolSection&&s.protocolSection.statusModule&&s.protocolSection.statusModule.overallStatus)||''])||'—'; })],
+    ['Phase',trials.map(function(s){ return ((s.protocolSection&&s.protocolSection.designModule&&s.protocolSection.designModule.phases)||[]).map(function(p){ return p.replace('PHASE','Phase '); }).join(', ')||'N/A'; })],
+    ['Enrollment',trials.map(function(s){ var n=s.protocolSection&&s.protocolSection.designModule&&s.protocolSection.designModule.enrollmentInfo&&s.protocolSection.designModule.enrollmentInfo.count; return n?n.toLocaleString():'—'; })],
+    ['Sponsor',trials.map(function(s){ return (s.protocolSection&&s.protocolSection.sponsorCollaboratorsModule&&s.protocolSection.sponsorCollaboratorsModule.leadSponsor&&s.protocolSection.sponsorCollaboratorsModule.leadSponsor.name)||'—'; })],
+    ['Virtual',trials.map(function(s){ return isVirtual(s)?'✓ Yes':'—'; })],
+    ['Diversity',trials.map(function(s){ return isDiversity(s)?'✓ Yes':'—'; })],
+    ['Elig. score',trials.map(function(s){ var sv=eligScores[nctId(s)]; return sv!==undefined?sv+'%':'Not scored'; })],
+    ['NCT ID',trials.map(function(s){ return '<a href="https://clinicaltrials.gov/study/'+nctId(s)+'" target="_blank">'+nctId(s)+'</a>'; })]
+  ];
+  var html='<div>';
+  rows.forEach(function(r){ html+='<div class="cpr"><div class="cprl">'+r[0]+'</div><div class="cpcc" style="grid-template-columns:repeat('+cols+',1fr)">'+r[1].map(function(v){ return '<div class="cpcc-i">'+v+'</div>'; }).join('')+'</div></div>'; });
+  html+='<div class="cpr"><div class="cprl">AI summary</div><div class="cpcc" style="grid-template-columns:repeat('+cols+',1fr)">'+trials.map(function(_,i){ return '<div class="cpcc-i" id="cms'+i+'"><span class="blink">●</span></div>'; }).join('')+'</div></div></div>';
+  if(cmpBody) cmpBody.innerHTML=html;
+  trials.forEach(async function(s,i){
+    var pm=s.protocolSection||{}, title=(pm.identificationModule&&pm.identificationModule.briefTitle)||'';
+    var desc=((pm.descriptionModule&&pm.descriptionModule.briefSummary)||'').slice(0,300);
+    try{ var lang=lnm(currentLang); var txt=await callAI('In 2 sentences in '+lang+', what is this trial testing? Plain language, concise.\nTitle: '+title+'\n'+desc,150); var el=g('cms'+i); if(el) el.textContent=txt; }
+    catch(e){ var el=g('cms'+i); if(el) el.textContent='—'; }
+  });
+}
+
+// ── SHARE / CAREGIVER ──
+function openShare() {
+  var saved=allTrials.filter(function(s){ return bookmarks.has(nctId(s)); });
+  if(!saved.length){ showToast('Bookmark some trials first'); return; }
+  var body=g('shareBody');
+  var preview='<div style="background:var(--bg);border-radius:var(--rx);padding:13px;border:1px solid var(--bd);margin-bottom:12px">'+
+    saved.map(function(s){ return '<div class="sti"><div class="stt">'+((s.protocolSection&&s.protocolSection.identificationModule&&s.protocolSection.identificationModule.briefTitle)||nctId(s))+'</div><div class="stm">'+((s.protocolSection&&s.protocolSection.designModule&&s.protocolSection.designModule.phases||[]).map(function(p){ return p.replace('PHASE','Phase '); }).join(', ')||'N/A')+' · '+((s.protocolSection&&s.protocolSection.statusModule&&s.protocolSection.statusModule.overallStatus)||'—')+'</div></div>'; }).join('')+'</div>';
+  if(body) body.innerHTML='<p style="font-size:13px;color:var(--tx2);margin-bottom:12px;line-height:1.5">Plain-language report of your bookmarked trials for your doctor or caregiver.</p>'+preview+'<div class="saib" id="saib"><span class="blink">●</span> <span style="color:var(--g)">Generating report…</span></div><div style="display:flex;gap:8px;margin-top:8px"><button class="bsm pr" onclick="cpRpt()"><i class="fa-solid fa-copy"></i> Copy</button><button class="bsm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button></div>';
+  openM('shareM');
+  var tl=saved.map(function(s){ return '- "'+(( s.protocolSection&&s.protocolSection.identificationModule&&s.protocolSection.identificationModule.briefTitle)||'?')+'" ('+((s.protocolSection&&s.protocolSection.statusModule&&s.protocolSection.statusModule.overallStatus)||'?')+')'; }).join('\n');
+  var lang=lnm(currentLang);
+  callAI('Write a 3-4 sentence plain-language report in '+lang+' for a patient to share with their doctor. Cover: conditions studied, which are recruiting, encourage asking about eligibility. Warm, accessible tone.\n\nTrials:\n'+tl,500)
+    .then(function(txt){ var el=g('saib'); if(el) el.textContent=txt; })
+    .catch(function(){ var el=g('saib'); if(el) el.textContent='Add your API key in Settings to generate this report.'; });
+}
+
+function cpRpt(){ var el=g('saib'); if(el){ navigator.clipboard.writeText(el.textContent).catch(function(){}); showToast('Copied!'); } }
+
+// ── ALERTS ──
+function mkAlert() {
+  var cond=gv('alCond'), email=gv('alEmail');
+  if(!cond){ showToast('Enter a condition name'); return; }
+  if(!email||!email.includes('@')){ showToast('Enter a valid email'); return; }
+  alerts.push({cond:cond,email:email,created:new Date().toLocaleDateString()});
+  localStorage.setItem('tp_al',JSON.stringify(alerts));
+  g('alCond').value=''; g('alEmail').value='';
+  renderAlerts(); showToast('Alert set for "'+cond+'"');
+}
+
+function renderAlerts() {
+  var el=g('alList'); if(!el) return;
+  el.innerHTML=alerts.length?alerts.map(function(a,i){ return '<div class="li"><div><div class="li-tx"><i class="fa-solid fa-bell" style="font-size:10px;margin-right:4px"></i>'+a.cond+'</div><div class="li-sub">'+a.email+' · '+a.created+'</div></div><button class="li-del" onclick="delAl('+i+')"><i class="fa-solid fa-xmark"></i></button></div>'; }).join('') : '<div class="emsg">No alerts yet</div>';
+}
+
+function delAl(i){ alerts.splice(i,1); localStorage.setItem('tp_al',JSON.stringify(alerts)); renderAlerts(); }
+
+// ── TRANSLATION ──
+var LN={es:'Spanish',fr:'French',ar:'Arabic',zh:'Chinese',hi:'Hindi',pt:'Portuguese',de:'German',en:'English'};
+function lnm(c){ return LN[c]||'English'; }
+
+async function translateUI(l) {
+  currentLang=l;
+  if(l==='en'){
+    // Reset all translated elements back to English
+    document.querySelectorAll('[data-en]').forEach(function(el){ el.textContent=el.getAttribute('data-en'); });
+    return;
+  }
+  var tov=g('tov'); if(tov) tov.classList.add('show');
+
+  if(!transCache[l]){
+    var phrases={
+      'Search Trials':'Search Trials',
+      'All phases':'All phases',
+      'All statuses':'All statuses',
+      'Any age':'Any age',
+      'All continents':'All continents',
+      'Virtual / decentralised trials only':'Virtual / decentralised trials only',
+      'Diversity-focused trials':'Diversity-focused trials',
+      'Check my eligibility':'Check my eligibility',
+      'Set alert':'Set alert',
+      'Bookmarks':'Bookmarks',
+      'Trial alerts':'Trial alerts',
+      'Compare':'Compare',
+      'Share':'Share',
+      'Save':'Save',
+      'Full record':'Full record',
+      'Plain-language summary':'Plain-language summary',
+      'Safety & risk overview':'Safety & risk overview',
+      'Trial readiness coach':'Trial readiness coach',
+      'Your profile':'Your profile',
+      'Conditions / diagnoses':'Conditions / diagnoses',
+      'Current medications':'Current medications',
+      'Country / city':'Country / city',
+      'Use my GPS location':'Use my GPS location',
+      'Open compare view':'Open compare view',
+      'Generate share report':'Generate share report',
+      'Search':'Search',
+      'Eligibility':'Eligibility',
+      'Saved':'Saved',
+      'Alerts':'Alerts',
+      'Filters':'Filters',
+      'Phase':'Phase',
+      'Status':'Status',
+      'Age group':'Age group',
+      'Sex':'Sex',
+      'Continent':'Continent',
+      'Age':'Age',
+      'Medications (optional)':'Medications (optional)',
+      'Ethnicity (for diversity matching)':'Ethnicity (for diversity matching)',
+      'Your email':'Your email',
+      'Condition':'Condition',
+      'Compare list':'Compare list',
+      'Share with caregiver / doctor':'Share with caregiver / doctor',
+      'All':'All',
+      'Bookmarked':'Bookmarked',
+      'Virtual':'Virtual',
+      'Diversity':'Diversity',
+      'Relevance':'Relevance',
+      'Eligibility fit':'Eligibility fit',
+      'Enrollment':'Enrollment',
+      'Distance':'Distance',
+      'Settings':'Settings',
+      'AI provider':'AI provider',
+      'Model':'Model',
+      'Model name':'Model name',
+      'Base URL':'Base URL',
+      'API key':'API key',
+      'Save & activate':'Save & activate',
+      'Test':'Test',
+      'Search condition, drug, or keyword':'Search condition, drug, or keyword'
+    };
+    try{
+      var prompt='Translate these English UI labels to '+lnm(l)+'. Return ONLY valid JSON. No explanations, no markdown, no extra text. Use format: {"Search Trials":"...","Phase":"...",...}\n\n'+JSON.stringify(phrases);
+      var txt=await callAI(prompt,1500);
+      console.log('Translation raw:',txt);
+      var parsed=extractJSON(txt);
+      transCache[l]=parsed;
+    }catch(e){
+      console.error('Translation error:',e);
+      if(tov) tov.classList.remove('show');
+      showToast('Translation failed: '+e.message.slice(0,60));
+      return;
+    }
+  }
+
+  // Apply translations to all [data-i18n] elements
+  var map=transCache[l];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n');
+    if(map[key]){
+      if(!el.hasAttribute('data-en')) el.setAttribute('data-en',el.textContent);
+      el.textContent=map[key];
+    }
+  });
+
+  if(tov) tov.classList.remove('show');
+  // Clear AI caches so summaries regenerate in new language
+  if(allTrials.length){ sumCache={}; riskCache={}; coachCache={}; renderAll(); }
+  showToast('Interface translated to '+lnm(l));
+}
+
+// ── MODALS ──
+function openM(id) {
+  var el=g(id); if(el) el.classList.add('open');
+  if(id==='cmpM') bldCmp();
+  if(id==='settingsM') populateSettings();
+}
+function closeM(id){ var el=g(id); if(el) el.classList.remove('open'); }
+
+// ── SETTINGS MODAL ──
+function populateSettings() {
+  var sp=g('settProv'), sm=g('settModel'), sk=g('settKey');
+  var prov=CFG.provider||'anthropic';
+  if(sp) sp.value=prov;
+  settProvChange(prov);
+  if(prov==='custom'){
+    var smc=g('settModelCustom'); if(smc) smc.value=CFG.model||'';
+    var sb=g('settBaseUrl'); if(sb) sb.value=CFG.baseUrl||'';
+  } else {
+    if(sm&&CFG.model) sm.value=CFG.model;
+  }
+  if(sk){
+    sk.value=CFG.key||'';
+    sk.type='password';
+    var ico=g('settEyeIcon'); if(ico) ico.className='fa-solid fa-eye';
+  }
+  updateSettingsStatus();
+  var tr=g('settTestResult'); if(tr) tr.textContent='';
+}
+
+function updateSettingsStatus() {
+  var el=g('settingsStatusText'), box=g('settingsStatus');
+  if(!el) return;
+  var isCustom = CFG.provider === 'custom';
+  var hasKey = CFG.key && CFG.key.length > 10;
+  var hasBaseUrl = isCustom && CFG.baseUrl;
+  if(hasKey || hasBaseUrl){
+    var label = (PROVIDERS[CFG.provider]&&PROVIDERS[CFG.provider].label||CFG.provider);
+    var detail = isCustom ? CFG.baseUrl : CFG.model;
+    el.textContent = 'AI active — ' + label + ' · ' + (detail||'default');
+    if(box){ box.style.background='var(--gl)'; box.style.borderColor='#B8D8A0'; box.style.color='var(--g)'; }
+  } else {
+    el.textContent = 'No API key set — AI features disabled';
+    if(box){ box.style.background='var(--aml)'; box.style.borderColor='#F5D88A'; box.style.color='var(--am)'; }
+  }
+}
+
+function settProvChange(provId) {
+  var ms=g('settModel'), sk=g('settKey'), kh=g('settKeyHint');
+  var isCustom = provId === 'custom';
+  g('settModelGroup').style.display = isCustom ? 'none' : '';
+  g('settModelCustomGroup').style.display = isCustom ? '' : 'none';
+  g('settBaseUrlGroup').style.display = isCustom ? '' : 'none';
+  if(!ms) return;
+  if(provId==='anthropic'){
+    ms.innerHTML='<option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — fast ★</option><option value="claude-sonnet-4-5-20251022">Claude Sonnet 4.5 — best quality</option><option value="claude-opus-4-5">Claude Opus 4.5 — most capable</option>';
+    if(sk) sk.placeholder='sk-ant-… (console.anthropic.com)';
+    if(kh) kh.innerHTML='Get a key at <a href="https://console.anthropic.com/" target="_blank" style="color:var(--blm)">console.anthropic.com</a>. Never share your key publicly.';
+  } else if(provId==='google'){
+    ms.innerHTML='<option value="gemini-2.0-flash">Gemini 2.0 Flash — fast ★</option><option value="gemini-2.5-flash">Gemini 2.5 Flash — balanced</option><option value="gemini-2.5-pro">Gemini 2.5 Pro — best quality</option>';
+    if(sk) sk.placeholder='AIza… (aistudio.google.com/app/apikey)';
+    if(kh) kh.innerHTML='Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blm)">aistudio.google.com</a>. Never share your key publicly.';
+  } else if(provId==='openrouter'){
+    ms.innerHTML='<optgroup label="Google — Free"><option value="google/gemini-2.0-flash:free">Gemini 2.0 Flash (free) ★</option><option value="google/gemini-2.5-flash:free">Gemini 2.5 Flash (free)</option></optgroup><optgroup label="Meta — Free"><option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (free)</option><option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (free)</option></optgroup><optgroup label="Mistral — Free"><option value="mistralai/mistral-7b-instruct:free">Mistral 7B (free)</option></optgroup><optgroup label="Paid"><option value="openai/gpt-4o-mini">GPT-4o mini</option></optgroup>';
+    if(sk) sk.placeholder='sk-or-v1-… (openrouter.ai/keys)';
+    if(kh) kh.innerHTML='Get a free key at <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--blm)">openrouter.ai</a>. Never share your key publicly.';
+  } else {
+    // Custom — show hints
+    if(sk){ sk.placeholder='Optional — leave blank if no auth needed'; sk.value=sk.value||''; }
+    if(kh) kh.innerHTML='Optional for most local/self-hosted providers (Ollama, vLLM). Required for cloud APIs (Groq, Together, DeepSeek, Azure).';
+  }
+}
+
+function toggleKeyVis() {
+  var inp=g('settKey'), ico=g('settEyeIcon'); if(!inp) return;
+  if(inp.type==='password'){ inp.type='text'; if(ico) ico.className='fa-solid fa-eye-slash'; }
+  else { inp.type='password'; if(ico) ico.className='fa-solid fa-eye'; }
+}
+
+function applySettings() {
+  var provId=gv('settProv')||'google', model, key=gv('settKey');
+  var isCustom = provId === 'custom';
+  if(isCustom){
+    model = gv('settModelCustom') || 'llama3.2';
+    CFG.baseUrl = gv('settBaseUrl');
+    if(!CFG.baseUrl){ showToast('Enter a Base URL'); return; }
+  } else {
+    model = gv('settModel') || 'gemini-2.0-flash';
+    CFG.baseUrl = '';
+    if(!key||key.length<10){ showToast('Enter a valid API key'); return; }
+  }
+  CFG.key=key; CFG.provider=provId; CFG.model=model;
+  sumCache={}; riskCache={}; coachCache={};
+  updateSettingsStatus(); refreshKeyIndicator();
+  closeM('settingsM');
+  showToast('Settings saved — '+(PROVIDERS[provId]&&PROVIDERS[provId].label||provId)+' active ✓');
+}
+
+async function testKey() {
+  var key=gv('settKey'), provId=gv('settProv')||'google';
+  var isCustom = provId === 'custom';
+  var model = isCustom ? (gv('settModelCustom')||'llama3.2') : (gv('settModel')||'gemini-2.0-flash');
+  var res=g('settTestResult');
+  if(!isCustom && !key){ if(res) res.textContent='⚠ Enter a key first'; return; }
+  if(!isCustom && key && key.length<10){ if(res) res.textContent='⚠ Key seems too short — check it'; return; }
+  if(isCustom && !gv('settBaseUrl')){ if(res) res.textContent='⚠ Enter a Base URL first'; return; }
+  if(res){ res.textContent='⏳ Testing connection…'; res.style.color='var(--tx3)'; }
+  var prev={key:CFG.key, provider:CFG.provider, model:CFG.model, baseUrl:CFG.baseUrl};
+  CFG.key=key; CFG.provider=provId; CFG.model=model;
+  if(isCustom) CFG.baseUrl=gv('settBaseUrl');
+  try{
+    var txt=await callAI('Reply with exactly the word: WORKING',20);
+    if(res){ res.textContent='✓ Connected! API is working.'; res.style.color='var(--gm)'; }
+  }catch(e){
+    var msg=e.message.includes('401')||e.message.includes('403')?'✗ Invalid or unauthorised key — check it and try again':e.message.includes('429')?'✗ Rate limit still hit after 3 retries — try again later or use a different model':'✗ Error: '+e.message;
+    if(res){ res.textContent=msg; res.style.color='var(--rd)'; }
+    CFG.key=prev.key; CFG.provider=prev.provider; CFG.model=prev.model;
+    CFG.baseUrl=prev.baseUrl;
+  }
+}
+
+// ── UTILS ──
+console.log('%cTrialPath © 2026','color:#3A7A1A;font-weight:bold;font-size:13px');
+</script>
+</body>
+</html>

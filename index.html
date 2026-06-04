@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TrialPath — Find the right clinical trial in any language. AI-powered search, eligibility scoring, plain-language summaries and caregiver share tools.">
+<meta name="author" content="TrialPath Ltd">
+<meta property="og:title" content="TrialPath — Find the Right Clinical Trial">
+<meta property="og:description" content="AI-powered clinical trial discovery. Plain language. 8 languages. No login.">
+<meta property="og:url" content="https://trialpath.health">
+<title>TrialPath — Find the Right Clinical Trial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0D1F2D;
+  --ink2:   #374151;
+  --ink3:   #6B7280;
+  --green:  #0C5C32;
+  --green2: #0E7C4A;
+  --green3: #12A362;
+  --greenl: #E8F7F0;
+  --teal:   #0891B2;
+  --teal2:  #06B6D4;
+  --amber:  #D97706;
+  --bg:     #FAFAF8;
+  --white:  #FFFFFF;
+  --bd:     #E5E7EB;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--bd);
+  padding: 0 5%;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Fraunces', serif; font-size: 22px; color: var(--ink);
+}
+.nav-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--green2);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 14px; font-weight: 700;
+}
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a {
+  font-size: 14px; color: var(--ink3); font-weight: 500;
+  transition: color .15s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  background: var(--green2); color: white !important;
+  padding: 9px 22px; border-radius: 99px; font-weight: 600;
+  font-size: 14px; transition: background .15s;
+}
+.nav-cta:hover { background: var(--green3) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 5% 80px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 60%, rgba(14,124,74,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 75% 30%, rgba(8,145,178,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(14,124,74,0.2);
+  border: 1px solid rgba(14,124,74,0.4);
+  color: #6EE7B7; padding: 6px 16px; border-radius: 99px;
+  font-size: 12px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; margin-bottom: 32px;
+  animation: fadeUp .6s ease both;
+}
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 300; color: white;
+  line-height: 1.1; max-width: 800px;
+  margin: 0 auto 24px;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero h1 em {
+  font-style: italic; color: #6EE7B7;
+}
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: #9CA3AF; max-width: 520px;
+  margin: 0 auto 44px; line-height: 1.7;
+  animation: fadeUp .6s .2s ease both;
+}
+.hero-btns {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp .6s .3s ease both;
+}
+.btn-primary {
+  background: var(--green2); color: white;
+  padding: 14px 34px; border-radius: 99px;
+  font-family: inherit; font-size: 16px; font-weight: 600;
+  border: none; cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background: var(--green3); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent; color: white;
+  padding: 14px 34px; border-radius: 99px;
+  font-family: inherit; font-size: 16px; font-weight: 500;
+  border: 1.5px solid rgba(255,255,255,0.25); cursor: pointer;
+  transition: all .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-outline:hover { border-color: rgba(255,255,255,0.6); }
+.hero-stats {
+  display: flex; gap: 48px; justify-content: center;
+  margin-top: 72px; flex-wrap: wrap;
+  animation: fadeUp .6s .4s ease both;
+}
+.hero-stat strong {
+  display: block; font-family: 'Fraunces', serif;
+  font-size: 40px; font-weight: 300; color: white; line-height: 1;
+}
+.hero-stat span {
+  font-size: 12px; color: #6B7280;
+  text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; display: block;
+}
+
+/* ── PROBLEM ── */
+.problem {
+  background: #F0F9F4;
+  padding: 96px 5%;
+}
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--green2); margin-bottom: 16px;
+}
+.problem h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 300; max-width: 640px;
+  line-height: 1.25; margin-bottom: 52px;
+}
+.prob-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px; max-width: 960px;
+}
+.prob-card {
+  background: white; border-radius: 16px;
+  padding: 28px 24px;
+  border: 1px solid var(--bd);
+  transition: transform .2s, box-shadow .2s;
+}
+.prob-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.07); }
+.prob-num {
+  font-family: 'Fraunces', serif;
+  font-size: 44px; font-weight: 300; line-height: 1;
+  margin-bottom: 10px;
+}
+.c-red { color: #DC2626; }
+.c-amber { color: var(--amber); }
+.c-purple { color: #7C3AED; }
+.c-teal { color: var(--teal); }
+.prob-card p { font-size: 14px; color: var(--ink2); line-height: 1.6; }
+
+/* ── FEATURES ── */
+.features { padding: 96px 5%; }
+.feat-intro { max-width: 620px; margin-bottom: 60px; }
+.feat-intro h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 300; line-height: 1.25; margin-bottom: 16px;
+}
+.feat-intro p { font-size: 17px; color: var(--ink3); line-height: 1.7; }
+.feat-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+.feat-card {
+  background: white; border: 1px solid var(--bd); border-radius: 16px;
+  padding: 26px 24px; position: relative; overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.feat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.07); }
+.feat-card.highlight {
+  background: var(--ink); border-color: var(--ink); color: white;
+}
+.feat-tag {
+  position: absolute; top: 20px; right: 18px;
+  font-size: 9px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 99px;
+  background: var(--greenl); color: var(--green2);
+}
+.feat-card.highlight .feat-tag { background: rgba(255,255,255,.1); color: #6EE7B7; }
+.feat-icon { font-size: 26px; margin-bottom: 14px; display: block; }
+.feat-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.feat-card.highlight h3 { color: white; }
+.feat-card p { font-size: 13.5px; color: var(--ink3); line-height: 1.6; }
+.feat-card.highlight p { color: #9CA3AF; }
+
+/* ── HOW IT WORKS ── */
+.how {
+  background: var(--ink);
+  padding: 96px 5%;
+}
+.how .section-label { color: #6EE7B7; }
+.how h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 300; color: white;
+  max-width: 560px; line-height: 1.25; margin-bottom: 60px;
+}
+.steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px; max-width: 900px;
+}
+.step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--green2); color: white;
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+}
+.step h3 { font-size: 16px; font-weight: 600; color: white; margin-bottom: 8px; }
+.step p { font-size: 13.5px; color: #6B7280; line-height: 1.65; }
+
+/* ── NHS / MANCHESTER ── */
+.nhs { padding: 96px 5%; background: white; }
+.nhs-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1100px; }
+.nhs-content h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(26px, 3.5vw, 42px);
+  font-weight: 300; line-height: 1.25; margin-bottom: 20px;
+}
+.nhs-content p { font-size: 16px; color: var(--ink2); line-height: 1.75; margin-bottom: 16px; }
+.nhs-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+.nhs-stat {
+  background: var(--greenl); border-radius: 12px;
+  padding: 18px 16px;
+}
+.nhs-stat strong {
+  display: block; font-family: 'Fraunces', serif;
+  font-size: 28px; font-weight: 300; color: var(--green2); line-height: 1;
+  margin-bottom: 4px;
+}
+.nhs-stat span { font-size: 12px; color: var(--ink3); line-height: 1.4; }
+.nhs-badge-list { display: flex; flex-direction: column; gap: 14px; }
+.nhs-badge {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--bg); border: 1px solid var(--bd);
+  border-radius: 12px; padding: 16px 18px;
+}
+.nhs-badge-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.nhs-badge h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.nhs-badge p { font-size: 12.5px; color: var(--ink3); line-height: 1.5; }
+
+/* ── PRIVACY ── */
+.privacy { padding: 80px 5%; background: var(--bg); }
+.privacy-inner { max-width: 960px; }
+.privacy h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 300; margin-bottom: 40px;
+}
+.privacy-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+.priv-card {
+  background: white; border: 1px solid var(--bd);
+  border-radius: 12px; padding: 22px 20px;
+  border-top: 3px solid var(--green2);
+}
+.priv-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+.priv-card p { font-size: 12.5px; color: var(--ink3); line-height: 1.6; }
+
+/* ── CTA ── */
+.cta-section {
+  padding: 96px 5%;
+  background: var(--green);
+  text-align: center;
+}
+.cta-section h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(30px, 5vw, 52px);
+  font-weight: 300; color: white;
+  margin-bottom: 16px;
+}
+.cta-section p { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 40px; max-width: 480px; margin-left: auto; margin-right: auto; }
+.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-white {
+  background: white; color: var(--green);
+  padding: 14px 34px; border-radius: 99px;
+  font-family: inherit; font-size: 16px; font-weight: 600;
+  border: none; cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-white:hover { background: var(--greenl); transform: translateY(-1px); }
+.btn-ghost-white {
+  background: transparent; color: white;
+  padding: 14px 34px; border-radius: 99px;
+  font-family: inherit; font-size: 16px; font-weight: 500;
+  border: 1.5px solid rgba(255,255,255,0.4); cursor: pointer;
+  transition: all .15s;
+}
+.btn-ghost-white:hover { border-color: white; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink); padding: 32px 5%;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+footer p { font-size: 12px; color: #4B5563; }
+footer a { color: #4B5563; transition: color .15s; }
+footer a:hover { color: #9CA3AF; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nhs-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-stats { gap: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-dot">→</div>
+    TrialPath
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#nhs">NHS</a>
+    <a href="/app" class="nav-cta">Open the tool →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span>●</span> Live — 450,000+ clinical trials
+  </div>
+  <h1>Find the right clinical trial.<br><em>In any language.</em></h1>
+  <p class="hero-sub">TrialPath searches every live clinical trial, explains them in plain English, scores your eligibility, and helps you share results with your doctor — in seconds, with no login.</p>
+  <div class="hero-btns">
+    <a href="/app" class="btn-primary">Search trials now →</a>
+    <a href="#features" class="btn-outline">See what it does</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>450K+</strong><span>Live trials</span></div>
+    <div class="hero-stat"><strong>8</strong><span>Languages</span></div>
+    <div class="hero-stat"><strong>0</strong><span>Login needed</span></div>
+    <div class="hero-stat"><strong>Free</strong><span>To search</span></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div style="max-width:960px">
+    <div class="section-label reveal">The problem</div>
+    <h2 class="reveal">80% of trials miss their enrollment targets — not because patients don't exist, but because they can't find them</h2>
+    <div class="prob-grid">
+      <div class="prob-card reveal">
+        <div class="prob-num c-red">&lt;5%</div>
+        <p>of eligible patients ever enrol in a relevant clinical trial</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num c-amber">£15M</div>
+        <p>lost per month by sponsors for every trial that misses its enrollment target</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num c-purple">#1 barrier</div>
+        <p>Language and health literacy stop underrepresented communities from ever applying</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num c-teal">No tool</div>
+        <p>combined AI summaries, eligibility scoring, multilingual support, and caregiver sharing — until now</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="feat-intro reveal">
+    <div class="section-label">What TrialPath does</div>
+    <h2>8 features. 0 alternatives with all of them.</h2>
+    <p>Every competitor does one or two of these. TrialPath is the only patient-facing tool that does all eight.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card highlight reveal">
+      <span class="feat-tag">Unique</span>
+      <span class="feat-icon">🌍</span>
+      <h3>8-language translation</h3>
+      <p>The full interface and every AI summary translated on demand. Arabic, Chinese, Hindi, Spanish, French, Portuguese, German. No existing trial tool does this.</p>
+    </div>
+    <div class="feat-card highlight reveal">
+      <span class="feat-tag">Unique</span>
+      <span class="feat-icon">🩺</span>
+      <h3>Caregiver share report</h3>
+      <p>One-click plain-language report of bookmarked trials formatted for a doctor or family member. Bring it to your next appointment.</p>
+    </div>
+    <div class="feat-card reveal">
+      <span class="feat-icon">🤖</span>
+      <h3>AI plain-language summaries</h3>
+      <p>Every trial rewritten in 3 sentences a patient can understand. What is tested, who it's for, why it matters. No jargon.</p>
+    </div>
+    <div class="feat-card reveal">
+      <span class="feat-icon">✅</span>
+      <h3>Eligibility scoring 0–100%</h3>
+      <p>Enter your age, conditions, and medications. AI scores each trial for your potential fit. Sort by best match.</p>
+    </div>
+    <div class="feat-card reveal">
+      <span class="feat-icon">📋</span>
+      <h3>Trial readiness coach</h3>
+      <p>4 specific next-action steps for each trial — what to ask, what to bring, how to register interest. Tailored to that trial's sponsor and contact details.</p>
+    </div>
+    <div class="feat-card reveal">
+      <span class="feat-icon">⚖️</span>
+      <h3>Diversity-focus filter</h3>
+      <p>Surfaces trials actively seeking underrepresented groups, aligned with the FDA's 2024 Diversity Action Plan requirements.</p>
+    </div>
+    <div class="feat-card reveal">
+      <span class="feat-icon">💻</span>
+      <h3>Virtual / DCT filter</h3>
+      <p>Find trials you can join from home. Flags remote, telehealth, and decentralised trials — critical for rural and international patients.</p>
+    </div>
+    <div class="feat-card reveal">
+      <span class="feat-icon">⚖️</span>
+      <h3>Side-by-side compare</h3>
+      <p>Compare up to 4 trials simultaneously with AI summaries, eligibility scores, phase, status, and site locations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">How it works</div>
+  <h2>From search to your doctor's appointment in four steps</h2>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <h3>Search</h3>
+      <p>Enter any condition, drug, or keyword. Filter by country, phase, status, or continent. Results pull from ClinicalTrials.gov live.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">2</div>
+      <h3>Match</h3>
+      <p>Enter your profile. AI scores every trial 0–100% for your eligibility. Diversity and virtual options are automatically flagged.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">3</div>
+      <h3>Understand</h3>
+      <p>Read a plain-language AI summary. See the safety overview, drug pipeline position, trial sites, and contact information.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">4</div>
+      <h3>Act</h3>
+      <p>Get your 4-step readiness plan. Share a caregiver report with your doctor. Bookmark or compare trials. No account needed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NHS SECTION -->
+<section class="nhs" id="nhs">
+  <div class="nhs-inner">
+    <div class="nhs-content reveal">
+      <div class="section-label">Greater Manchester & the NHS</div>
+      <h2>Built for communities where it matters most</h2>
+      <p>Greater Manchester conducts world-class clinical research across its 2.8 million population. TrialPath's 8-language support is specifically designed for Manchester's diverse communities — South Asian, Black African, Eastern European — who are chronically underrepresented in clinical trials.</p>
+      <div class="nhs-stats">
+        <div class="nhs-stat"><strong>800+</strong><span>Active studies at MFT annually</span></div>
+        <div class="nhs-stat"><strong>15,000</strong><span>Patients in research every year</span></div>
+        <div class="nhs-stat"><strong>2.8M</strong><span>Greater Manchester population served</span></div>
+        <div class="nhs-stat"><strong>Apr 2025</strong><span>GM CRDC launched — TrialPath aligned</span></div>
+      </div>
+    </div>
+    <div class="nhs-badge-list reveal">
+      <div class="nhs-badge">
+        <div class="nhs-badge-icon" style="background:#E8F7F0">🏥</div>
+        <div>
+          <h4>Engaged with Health Innovation Manchester</h4>
+          <p>Actively working with HIM to connect TrialPath with NHS clinical trial sites across Greater Manchester.</p>
+        </div>
+      </div>
+      <div class="nhs-badge">
+        <div class="nhs-badge-icon" style="background:#EDE9FE">🌍</div>
+        <div>
+          <h4>8 languages — no patient left behind</h4>
+          <p>Full interface and AI summaries translated on demand. Arabic, Chinese, Hindi, Spanish, French, Portuguese, German.</p>
+        </div>
+      </div>
+      <div class="nhs-badge">
+        <div class="nhs-badge-icon" style="background:#FEF3C7">⚖️</div>
+        <div>
+          <h4>FDA 2024 Diversity Action Plans</h4>
+          <p>TrialPath's diversity filter surfaces trials mandated to actively recruit underrepresented groups.</p>
+        </div>
+      </div>
+      <div class="nhs-badge">
+        <div class="nhs-badge-icon" style="background:#E0F5FA">🔒</div>
+        <div>
+          <h4>Zero data retention by design</h4>
+          <p>Health profiles never leave your browser. No server storage, no database, no account required.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="privacy" id="privacy">
+  <div class="privacy-inner">
+    <div class="section-label reveal">Data privacy</div>
+    <h2 class="reveal">Your health data never leaves your browser</h2>
+    <div class="privacy-grid">
+      <div class="priv-card reveal">
+        <h4>🔒 Zero retention</h4>
+        <p>Every health profile you enter is processed in your browser session only. Closing the tab permanently deletes everything. Nothing is stored on TrialPath's servers.</p>
+      </div>
+      <div class="priv-card reveal">
+        <h4>📋 Anthropic DPA</h4>
+        <p>AI features use Anthropic's Commercial API with a legally binding Data Processing Agreement — zero data retention, never used for model training.</p>
+      </div>
+      <div class="priv-card reveal">
+        <h4>🛡️ No account required</h4>
+        <p>No login, no email, no tracking. Bookmarks and alerts are stored locally on your device only, never uploaded to any server.</p>
+      </div>
+      <div class="priv-card reveal">
+        <h4>✅ UK GDPR aligned</h4>
+        <p>Browser-only zero-retention architecture designed to minimise UK GDPR obligations. ICO registration and DPIA before any NHS deployment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="reveal">Ready to find your trial?</h2>
+  <p class="reveal">450,000+ live trials. Plain language. Any language. Free to search.</p>
+  <div class="cta-btns reveal">
+    <a href="/app" class="btn-white">Search trials now →</a>
+    <a href="mailto:hello@trialpath.health" class="btn-ghost-white">Contact us</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 TrialPath Ltd · Registered in England and Wales · <a href="#privacy">Privacy</a> · <a href="mailto:hello@trialpath.health">hello@trialpath.health</a></p>
+  <p>Powered by <a href="https://clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a> (NIH) · Not medical advice</p>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(function(el) {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
