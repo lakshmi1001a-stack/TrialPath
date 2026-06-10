@@ -1503,11 +1503,10 @@ async function testKey() {
 // ── AUDIO SUMMARY (Web Speech API — free, no key needed) ──
 var speechActive = false;
 function speakSummary(idx) {
-  // Stop any current speech
-  if(window.speechSynthesis) window.speechSynthesis.cancel();
-
   var btn = g('spkBtn'+idx);
-  if(speechActive){ speechActive=false; if(btn){ btn.innerHTML='<i class="fa-solid fa-volume-high"></i> Listen'; } return; }
+  if(speechActive){ speechActive=false; if(btn){ btn.innerHTML='<i class="fa-solid fa-volume-high"></i> Listen'; } if(window.speechSynthesis) window.speechSynthesis.cancel(); return; }
+
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
 
   var el = g('ai'+idx);
   if(!el){ showToast('Summary not yet loaded — wait a moment'); return; }
