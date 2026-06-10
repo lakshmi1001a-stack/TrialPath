@@ -1519,12 +1519,27 @@ function speakSummary(idx) {
   // Match language to current UI language
   var langMap={'en':'en-GB','es':'es-ES','fr':'fr-FR','ar':'ar-SA','zh':'zh-CN','hi':'hi-IN','pt':'pt-BR','de':'de-DE'};
   utter.lang = langMap[currentLang]||'en-GB';
-  utter.rate = 0.88;
-  utter.pitch = 1;
 
-  // Try to find a matching voice
+  // Soothing, clear voice settings
+  utter.rate = 0.82;
+  utter.pitch = 0.9;
+  utter.volume = 1;
+
+  // Prefer premium/natural voices for clarity
   var voices = window.speechSynthesis.getVoices();
-  var match = voices.find(function(v){ return v.lang.startsWith(utter.lang.split('-')[0]); });
+  var preferred = [];
+  var langPrefix = utter.lang.split('-')[0];
+  if(langPrefix==='en') preferred=['Samantha','Daniel','Karen','Moira','Fiona','Google UK English Female','Google UK English Male','Google US English','Microsoft Zira','Microsoft David'];
+  if(langPrefix==='es') preferred=['Google español','Monica','Microsoft Sabina','Paulina'];
+  if(langPrefix==='fr') preferred=['Google français','Amélie','Thomas'];
+  if(langPrefix==='de') preferred=['Google Deutsch','Anna','Markus'];
+  if(langPrefix==='pt') preferred=['Google português do Brasil','Joana','Luciana'];
+  if(langPrefix==='hi') preferred=['Google हिन्दी','Lekha'];
+  if(langPrefix==='zh') preferred=['Google 普通话','Ting-Ting'];
+  if(langPrefix==='ar') preferred=['Google العربية','Maged'];
+  var match;
+  preferred.some(function(name){ match=voices.find(function(v){ return v.name===name; }); return !!match; });
+  if(!match) match=voices.find(function(v){ return v.lang.startsWith(langPrefix); });
   if(match) utter.voice = match;
 
   speechActive = true;
